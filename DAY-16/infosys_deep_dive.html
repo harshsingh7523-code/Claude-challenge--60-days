@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Infosys Ltd — Deep Dive Fundamental Research</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d2129; --border:#2a2f3a;
+    --text:#e8eaed; --muted:#9aa3b2; --accent:#4f9cff; --good:#3ddc97;
+    --warn:#f5b942; --bad:#ff6b6b; --font: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;}
+  .wrap{max-width:920px;margin:0 auto;padding:24px 18px 60px;}
+  header{padding:20px 0 16px;border-bottom:1px solid var(--border);margin-bottom:6px;}
+  header h1{margin:0 0 4px;font-size:1.55rem;}
+  header .sub{color:var(--muted);font-size:0.92rem;}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .badge{background:var(--panel2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:0.82rem;color:var(--muted);}
+  .badge b{color:var(--text);}
+  .price-row{display:flex;align-items:baseline;gap:10px;margin-top:10px;flex-wrap:wrap;}
+  .price{font-size:2.1rem;font-weight:700;}
+  .chg{font-size:0.95rem;color:var(--bad);font-weight:600;}
+
+  nav.tabs{display:flex;gap:4px;overflow-x:auto;margin:18px 0 0;border-bottom:1px solid var(--border);}
+  nav.tabs button{background:none;border:none;color:var(--muted);padding:10px 14px;font-size:0.88rem;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;font-family:var(--font);}
+  nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  section.tab{display:none;padding:20px 0;}
+  section.tab.active{display:block;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+  .card .lbl{color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.03em;}
+  .card .val{font-size:1.15rem;font-weight:700;margin-top:3px;}
+  .card .note{font-size:0.76rem;margin-top:2px;}
+  .good{color:var(--good);} .warn{color:var(--warn);} .bad{color:var(--bad);}
+
+  h2{font-size:1.15rem;margin:22px 0 8px;}
+  h3{font-size:1rem;margin:18px 0 6px;color:var(--text);}
+  p{color:#cdd2db;font-size:0.93rem;}
+  ul{color:#cdd2db;font-size:0.93rem;padding-left:20px;}
+  li{margin-bottom:5px;}
+
+  table{width:100%;border-collapse:collapse;font-size:0.85rem;margin:10px 0 20px;}
+  th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--border);white-space:nowrap;}
+  th:first-child,td:first-child{text-align:left;color:var(--muted);}
+  th{color:var(--muted);font-weight:600;font-size:0.78rem;}
+  tr:hover td{background:var(--panel2);}
+
+  .source{font-size:0.72rem;color:#6f7685;margin-top:2px;}
+  .flag{background:#2a2110;border:1px solid #4a3a12;color:var(--warn);border-radius:8px;padding:8px 12px;font-size:0.83rem;margin:10px 0;}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:0.76rem;color:var(--muted);margin-left:6px;}
+
+  .chart-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin:14px 0;}
+  .chart-box .cap{font-size:0.78rem;color:var(--muted);margin-top:6px;}
+
+  .verdict{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:14px 0;}
+  .verdict .tag{font-size:1.4rem;font-weight:800;}
+  .disclaimer{margin-top:26px;padding:14px 16px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;font-size:0.8rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Infosys Ltd <span class="pill">NSE: INFY · BSE: 500209</span></h1>
+  <div class="sub">IT Services &amp; Consulting · Nifty 50 constituent · Deep Dive Fundamental Report</div>
+  <div class="price-row">
+    <div class="price">₹1,169</div>
+    <div class="chg">−0.49% (14 Aug 2026 close)</div>
+  </div>
+  <div class="badges">
+    <div class="badge">Mkt Cap <b>₹4,74,468 Cr</b></div>
+    <div class="badge">P/E <b>15.2x</b></div>
+    <div class="badge">ROE <b>31.9%</b></div>
+    <div class="badge">ROCE <b>40.0%</b></div>
+    <div class="badge">Div Yield <b>4.11%</b></div>
+  </div>
+  <div class="source">Source: Screener.in (consolidated), 14 Aug 2026 close · Cross-checked with ValueResearch, TipRanks, Business Standard</div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-t="snapshot" class="active">Snapshot</button>
+  <button data-t="valuation">Valuation</button>
+  <button data-t="growth">Growth</button>
+  <button data-t="health">Health</button>
+  <button data-t="returns">Returns</button>
+  <button data-t="peers">Peers</button>
+  <button data-t="ownership">Ownership</button>
+  <button data-t="view">View</button>
+</nav>
+
+<!-- SNAPSHOT -->
+<section class="tab active" id="snapshot">
+  <h2>Company Snapshot</h2>
+  <p>Infosys is India's <b>2nd-largest IT services company</b> (behind TCS), providing consulting, technology, outsourcing and digital transformation services across North America, Europe and India. Core offerings span cloud, data & AI (including its generative-AI platform "Topaz"), enterprise applications (Finacle, Panaya), cybersecurity, and application modernization. <span class="source">Source: Screener.in company profile</span></p>
+
+  <div class="grid">
+    <div class="card"><div class="lbl">CMP</div><div class="val">₹1,169</div></div>
+    <div class="card"><div class="lbl">Market Cap</div><div class="val">₹4,74,468 Cr</div></div>
+    <div class="card"><div class="lbl">Face Value</div><div class="val">₹5</div></div>
+    <div class="card"><div class="lbl">52W High / Low</div><div class="val">₹1,728 / ₹982</div></div>
+    <div class="card"><div class="lbl">Book Value</div><div class="val">₹225</div></div>
+    <div class="card"><div class="lbl">TTM Revenue</div><div class="val">₹1,84,582 Cr</div></div>
+    <div class="card"><div class="lbl">TTM Net Profit</div><div class="val">₹30,325 Cr</div></div>
+    <div class="card"><div class="lbl">TTM EPS</div><div class="val">₹74.25</div></div>
+  </div>
+  <div class="source">Source: Screener.in (consolidated), data as of 14 Aug 2026</div>
+
+  <div class="chart-box">
+    <svg viewBox="0 0 640 180" width="100%" height="180">
+      <!-- 1yr price path illustrative of high/low/current, not tick-by-tick -->
+      <polyline fill="none" stroke="#4f9cff" stroke-width="2.5"
+        points="0,60 60,40 120,20 180,35 240,55 300,90 360,120 420,140 480,130 540,150 600,155 640,148" />
+      <line x1="0" y1="20" x2="640" y2="20" stroke="#2a2f3a" stroke-dasharray="4 4"/>
+      <text x="4" y="15" fill="#9aa3b2" font-size="10">52W High ₹1,728</text>
+      <line x1="0" y1="160" x2="640" y2="160" stroke="#2a2f3a" stroke-dasharray="4 4"/>
+      <text x="4" y="174" fill="#9aa3b2" font-size="10">52W Low ₹982</text>
+    </svg>
+    <div class="cap">Illustrative 1-year price trend (stock is down ~19% over the past year, currently well off its 52-week high). For exact daily OHLC, refer to NSE/BSE charts.</div>
+  </div>
+
+  <h3>Pros (from fundamentals)</h3>
+  <ul>
+    <li>Good dividend yield of 4.11%, with a healthy payout ratio (~66–68% of profit)</li>
+    <li>Strong ROE track record: 31.9% (current), 30.8% (3Y avg)</li>
+    <li>Working capital days improved from ~42 to ~33 over recent years</li>
+    <li>Debt-free-like balance sheet — borrowings are minor (mostly lease liabilities)</li>
+  </ul>
+  <h3>Watch-points</h3>
+  <ul>
+    <li>Promoter holding is low (13.8%) and declined further last quarter (−0.56%) — typical for Infosys's widely-held structure, not a red flag on its own, but worth monitoring</li>
+    <li>Stock price has underperformed profit growth — 1-year price CAGR −19% versus TTM profit growth of +14%, signalling multiple compression</li>
+  </ul>
+  <div class="source">Source: Screener.in machine-generated pros/cons checklist</div>
+</section>
+
+<!-- VALUATION -->
+<section class="tab" id="valuation">
+  <h2>Valuation</h2>
+  <div class="grid">
+    <div class="card"><div class="lbl">P/E (TTM)</div><div class="val">15.2x</div><div class="note good">Below sector median</div></div>
+    <div class="card"><div class="lbl">P/B</div><div class="val">~5.2x</div><div class="note">CMP ₹1,169 / BV ₹225</div></div>
+    <div class="card"><div class="lbl">Dividend Yield</div><div class="val">4.11%</div><div class="note good">High for the sector</div></div>
+  </div>
+
+  <div class="flag">🚩 Data spread: Different sources quote Infosys P/E anywhere from ~15x (Screener, 14 Aug 2026) to ~21–23x (TipRanks, ValueResearch, Business Standard, various dates over the last year). This largely reflects the stock's ~19% one-year price decline and differing "as of" dates/EPS bases (TTM vs FY). Screener's 15.2x, computed on the latest TTM EPS of ₹74.25 and the 14 Aug 2026 close, is used as the primary figure here — verify live at Screener.in or NSE before relying on it.</div>
+
+  <h3>Valuation vs history &amp; peers</h3>
+  <p>At a P/E of ~15x, Infosys trades noticeably below its own 5-year average band (historically ~22–28x) and below large-cap IT peers like TCS (~23x, per Nov 2025 reporting) and HCLTech (~25x). On this basis the stock screens as <b>Cheap relative to its own history and to peers</b> — but a de-rating like this can also reflect genuine growth-rate compression (constant-currency revenue growth has slowed industry-wide) rather than a pure mispricing, so it should not be read as an automatic signal.</p>
+  <p><b>Verdict (per interpretation rules):</b> Cheap vs 5Y average and vs peer median — driven mainly by the ~19% one-year share price fall rather than earnings deterioration.</p>
+  <div class="source">Source: Screener.in; Business Standard (TCS/HCLTech P/E, Nov 2025); TipRanks</div>
+</section>
+
+<!-- GROWTH -->
+<section class="tab" id="growth">
+  <h2>Growth Trends</h2>
+  <table>
+    <tr><th>Metric</th><th>10Y</th><th>5Y</th><th>3Y</th><th>TTM</th></tr>
+    <tr><td>Sales CAGR</td><td>11%</td><td>12%</td><td>7%</td><td>11%</td></tr>
+    <tr><td>Profit CAGR</td><td>8%</td><td>9%</td><td>8%</td><td>14%</td></tr>
+    <tr><td>Stock Price CAGR</td><td>9%</td><td>−8%</td><td>−6%</td><td>−19% (1Y)</td></tr>
+  </table>
+  <div class="source">Source: Screener.in consolidated financials</div>
+
+  <h3>Revenue &amp; Profit (₹ Cr, FY-end March)</h3>
+  <table>
+    <tr><th>FY</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th><th>TTM</th></tr>
+    <tr><td>Revenue</td><td>100,472</td><td>121,641</td><td>146,767</td><td>153,670</td><td>162,990</td><td>178,650</td><td>184,582</td></tr>
+    <tr><td>Net Profit</td><td>19,423</td><td>22,146</td><td>24,108</td><td>26,248</td><td>26,750</td><td>29,474</td><td>30,325</td></tr>
+    <tr><td>EPS (₹)</td><td>45.42</td><td>52.56</td><td>58.08</td><td>63.20</td><td>64.32</td><td>72.59</td><td>74.25</td></tr>
+    <tr><td>OPM %</td><td>28%</td><td>26%</td><td>24%</td><td>24%</td><td>24%</td><td>24%</td><td>24%</td></tr>
+  </table>
+
+  <h3>EPS — last 8 quarters (₹)</h3>
+  <table>
+    <tr><td>Sep'24</td><td>Dec'24</td><td>Mar'25</td><td>Jun'25</td><td>Sep'25</td><td>Dec'25</td><td>Mar'26</td><td>Jun'26</td></tr>
+    <tr><td>15.67</td><td>16.39</td><td>16.93</td><td>16.66</td><td>17.73</td><td>16.41</td><td>20.96</td><td>19.15</td></tr>
+  </table>
+
+  <p><b>Growth classification:</b> Revenue growth is <b>Steady</b> (double-digit TTM), operating margin has been remarkably stable around 24% for 5+ years. Profit growth has <b>accelerated</b> in the TTM period (14%) versus the 3–5Y trend (8–9%), aided partly by tax and other-income variability quarter to quarter — worth checking the upcoming quarters for confirmation rather than assuming continuation. Historical trend continuation shown here is illustrative only, not a forecast.</p>
+  <div class="source">Source: Screener.in quarterly &amp; annual results</div>
+</section>
+
+<!-- HEALTH -->
+<section class="tab" id="health">
+  <h2>Financial Health</h2>
+  <div class="grid">
+    <div class="card"><div class="lbl">Debt / Equity</div><div class="val">~0.10</div><div class="note good">Safe</div></div>
+    <div class="card"><div class="lbl">Interest Coverage</div><div class="val">~97x</div><div class="note good">Healthy</div></div>
+    <div class="card"><div class="lbl">Current Ratio</div><div class="val">🚩 N/A</div><div class="note">verify at Screener.in / annual report</div></div>
+    <div class="card"><div class="lbl">Working Capital Days</div><div class="val">33</div><div class="note good">Improved from 42</div></div>
+  </div>
+
+  <h3>Free Cash Flow (₹ Cr)</h3>
+  <table>
+    <tr><th>FY</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+    <tr><td>FCF</td><td>21,724</td><td>19,888</td><td>23,009</td><td>33,457</td><td>31,259</td></tr>
+  </table>
+  <p><b>FCF verdict:</b> Positive and broadly growing across the 5-year window (₹19,888 Cr → ₹31,259 Cr), with strong operating cash conversion (CFO/Operating Profit consistently ~95–105%) — classified as <b>Strong</b>.</p>
+
+  <h3>Balance sheet basics</h3>
+  <ul>
+    <li>Total borrowings of ~₹9,176 Cr against total equity (capital + reserves) of ~₹92,852 Cr as of FY2026 — very low leverage, and most of this is lease liabilities rather than financial debt</li>
+    <li>Debtor days ~72 (slightly elevated vs historical ~65–68, worth watching for collection discipline)</li>
+  </ul>
+  <div class="source">Source: Screener.in consolidated balance sheet &amp; cash flow statements</div>
+</section>
+
+<!-- RETURNS -->
+<section class="tab" id="returns">
+  <h2>Returns on Capital</h2>
+  <table>
+    <tr><th>Period</th><th>10Y</th><th>5Y</th><th>3Y</th><th>Last Year</th></tr>
+    <tr><td>ROE</td><td>28%</td><td>31%</td><td>31%</td><td>32%</td></tr>
+  </table>
+  <div class="card" style="max-width:260px;margin-top:6px;"><div class="lbl">Current ROCE</div><div class="val good">40.0%</div><div class="note good">Well above 15% "Good" threshold</div></div>
+  <p style="margin-top:14px;">Both ROE (~32%) and ROCE (40%) sit far above the "Good" threshold (&gt;15%) and have been remarkably consistent for a decade — a hallmark of Infosys's asset-light, cash-generative services model. This consistency is one reason the market has historically awarded Infosys a valuation premium over smaller IT peers.</p>
+  <div class="source">Source: Screener.in consolidated ratios</div>
+</section>
+
+<!-- PEERS -->
+<section class="tab" id="peers">
+  <h2>Peer Comparison</h2>
+  <table>
+    <tr><th>Company</th><th>P/E</th><th>ROE</th><th>Notes</th></tr>
+    <tr><td>Infosys</td><td>~15.2x</td><td>31.9%</td><td>Largest 1-yr price decline among peers (−19%)</td></tr>
+    <tr><td>TCS</td><td>~22.9x</td><td>~46%</td><td>Largest by revenue &amp; market cap; highest ROE</td></tr>
+    <tr><td>HCLTech</td><td>~25.5x</td><td>—</td><td>Strongest Q3 FY26 margin performance among peers</td></tr>
+    <tr><td>Wipro</td><td>~19–22x</td><td>~15.7%</td><td>Lower growth/margins; leans on buybacks for EPS support</td></tr>
+  </table>
+  <div class="flag">🚩 P/E figures above are drawn from reports dated between Nov 2025 and Jun 2026 and are not all same-day snapshots — treat as directional, and verify current multiples at Screener.in or NSE/BSE before use.</div>
+
+  <h3>Where Infosys leads</h3>
+  <ul>
+    <li>Cheapest of the large-cap IT pack on trailing P/E</li>
+    <li>Higher dividend yield than TCS and HCLTech</li>
+    <li>Strong ROE (~32%) — well ahead of Wipro, though behind TCS</li>
+  </ul>
+  <h3>Where peers lead</h3>
+  <ul>
+    <li>TCS: higher ROE (~46%), larger revenue base, longer dividend track record, promoter (Tata Sons) holds ~72% vs Infosys's ~14%</li>
+    <li>HCLTech: strongest recent operating margin performance among the pack</li>
+  </ul>
+  <p>Neutral summary: Infosys sits in a "quality but cheaper" bracket versus TCS's "premium quality, premium price" positioning, while Wipro trades at a discount reflecting weaker growth and margins. No single stock is a clear winner across all metrics — the right fit depends on whether an investor prioritises scale/quality (TCS) or valuation/yield (Infosys).</p>
+  <div class="source">Source: EnrichMoney (Q3 FY26 comparison); Business Standard (Nov 2025 P/E comparison); investwithmithun.com comparison pages</div>
+</section>
+
+<!-- OWNERSHIP -->
+<section class="tab" id="ownership">
+  <h2>Ownership &amp; Shareholding</h2>
+  <table>
+    <tr><th>Category</th><th>Sep'25</th><th>Dec'25</th><th>Mar'26</th><th>Jun'26</th></tr>
+    <tr><td>Promoters</td><td>14.30%</td><td>14.52%</td><td>14.38%</td><td>13.82%</td></tr>
+    <tr><td>FIIs</td><td>30.08%</td><td>30.27%</td><td>28.45%</td><td>27.09%</td></tr>
+    <tr><td>DIIs</td><td>41.46%</td><td>41.08%</td><td>43.19%</td><td>42.78%</td></tr>
+    <tr><td>Public</td><td>13.70%</td><td>13.69%</td><td>13.54%</td><td>15.88%</td></tr>
+  </table>
+  <p><b>Trend:</b> Promoter holding has been gradually declining (14.6% → 13.8% over the past year) — normal for Infosys, whose founders/promoters have historically held a small stake with no pledging reported. FII holding has also been trending down (33% → 27% over 2 years), broadly offset by rising DII (domestic mutual fund/insurer) ownership — a pattern consistent across much of the Nifty 50 amid sustained domestic SIP flows.</p>
+  <div class="flag">No pledging flagged in available data — promoter stake is low by design (widely-held company), not due to distress.</div>
+  <div class="source">Source: Screener.in shareholding pattern (quarterly)</div>
+</section>
+
+<!-- VIEW -->
+<section class="tab" id="view">
+  <h2>Overall View</h2>
+  <div class="verdict">
+    <div class="tag good">Strong</div>
+    <div>Fundamental Quality — consistent high ROE/ROCE, low leverage, strong free cash flow, and a valuation that currently sits below its own historical average and peer median.</div>
+  </div>
+
+  <h3>Key strengths</h3>
+  <ul>
+    <li>Decade-long track record of ROE/ROCE well above 15%, with minimal debt</li>
+    <li>Strong and improving free cash flow generation (₹31,259 Cr TTM-adjacent FY26)</li>
+    <li>Currently valued below its 5-year average P/E and below large-cap peers</li>
+  </ul>
+  <h3>Key watch-points</h3>
+  <ul>
+    <li>Revenue growth has moderated (3Y CAGR of 7% vs 10Y average of 11%) — reflects sector-wide demand softness</li>
+    <li>Stock price has fallen ~19% over the past year despite steady earnings — market appears cautious on near-term demand/AI-disruption narratives for IT services</li>
+    <li>Debtor days have crept up slightly; worth tracking working-capital discipline in coming quarters</li>
+  </ul>
+  <h3>Metric to track next</h3>
+  <p>Quarterly constant-currency revenue growth and large-deal TCV (total contract value) — these are the clearest early signals of whether demand is stabilising or continuing to soften, and will likely drive re-rating (or further de-rating) of the stock.</p>
+
+  <h3>Data confidence</h3>
+  <p><b>Moderate.</b> Core financials (P&amp;L, balance sheet, cash flow, shareholding) are sourced directly from Screener.in's consolidated filings-based data and are internally consistent. Peer P/E multiples are cross-checked across multiple secondary sources but carry some date-mismatch (Nov 2025–Jun 2026), and current ratio was unavailable at the sourced pages — flagged above for independent verification.</p>
+
+  <div class="disclaimer">
+    This is a view of the fundamentals for educational purposes only. It is not investment advice and not a buy/sell/hold recommendation. Verify all figures independently. The final decision is yours.
+  </div>
+</section>
+
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('#tabs button');
+  const tabs = document.querySelectorAll('section.tab');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      tabs.forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.t).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
