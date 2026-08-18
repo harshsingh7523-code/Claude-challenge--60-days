@@ -1,0 +1,422 @@
+<style>
+  :root{
+    --bg:#f6f5f2;
+    --card:#ffffff;
+    --border:#e6e3dc;
+    --ink:#1f1d1a;
+    --muted:#6b675f;
+    --accent:#5b4636;
+    --accent-soft:#efe7dd;
+    --red:#c0392b;
+    --red-bg:#fdecea;
+    --orange:#b9720a;
+    --orange-bg:#fdf1de;
+    --green:#2e7d4f;
+    --green-bg:#e8f5ec;
+    --blue:#2a5f8f;
+    --blue-bg:#e9f1f9;
+    --purple:#6a4c93;
+    --purple-bg:#f1ecf7;
+    --shadow:0 1px 2px rgba(31,29,26,0.04), 0 4px 14px rgba(31,29,26,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:960px;
+    margin:0 auto;
+    padding:20px 16px 60px;
+  }
+  .header{
+    margin-bottom:24px;
+  }
+  .header .eyebrow{
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .header h1{
+    font-size:26px;
+    margin:0 0 6px;
+    font-weight:800;
+    letter-spacing:-0.01em;
+  }
+  .header .meta{
+    color:var(--muted);
+    font-size:13.5px;
+  }
+  .header .meta b{color:var(--ink);}
+
+  .section{
+    margin-bottom:26px;
+  }
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:15px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--accent);
+    margin-bottom:12px;
+  }
+  .section-title .count{
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-size:11px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:999px;
+    letter-spacing:0;
+    text-transform:none;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+    box-shadow:var(--shadow);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px;
+  }
+  @media (max-width:640px){
+    .grid{grid-template-columns:1fr;}
+  }
+
+  .takeaway{
+    border-left:4px solid var(--accent);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .takeaway:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 18px rgba(31,29,26,0.10);
+  }
+  .takeaway .label{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  .takeaway .body{
+    font-size:14.5px;
+  }
+  .takeaway .body b{color:var(--accent);}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+  }
+  thead th{
+    text-align:left;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--muted);
+    border-bottom:2px solid var(--border);
+    padding:10px 12px;
+  }
+  tbody td{
+    padding:12px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#faf9f6;}
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .badge-red{background:var(--red-bg); color:var(--red);}
+  .badge-orange{background:var(--orange-bg); color:var(--orange);}
+  .badge-green{background:var(--green-bg); color:var(--green);}
+  .badge-blue{background:var(--blue-bg); color:var(--blue);}
+  .badge-purple{background:var(--purple-bg); color:var(--purple);}
+  .badge-muted{background:#eee; color:var(--muted);}
+
+  .item-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .item{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 16px;
+    background:#fffefc;
+  }
+  .item .item-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:6px;
+    flex-wrap:wrap;
+  }
+  .item .item-title{
+    font-weight:700;
+    font-size:14.5px;
+  }
+  .item .item-body{
+    font-size:14px;
+    color:#3a372f;
+  }
+  .item .item-body i{color:var(--muted);}
+
+  details.collapsible{
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--card);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  details.collapsible + details.collapsible{margin-top:12px;}
+  details.collapsible summary{
+    list-style:none;
+    cursor:pointer;
+    padding:16px 18px;
+    font-weight:700;
+    font-size:14.5px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  details.collapsible summary::-webkit-details-marker{display:none;}
+  details.collapsible summary .chev{
+    color:var(--muted);
+    transition:transform .15s ease;
+    font-size:13px;
+  }
+  details.collapsible[open] summary .chev{transform:rotate(90deg);}
+  details.collapsible .panel{
+    padding:0 18px 18px;
+    font-size:14px;
+    color:#3a372f;
+  }
+  details.collapsible .panel p{margin:0 0 10px;}
+  details.collapsible .panel ul{margin:0; padding-left:18px;}
+  details.collapsible .panel li{margin-bottom:8px;}
+
+  .note-box{
+    background:var(--blue-bg);
+    border:1px solid #cfe0ef;
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:13.5px;
+    color:#2a4d6e;
+    margin-bottom:14px;
+  }
+
+  .empty{
+    color:var(--muted);
+    font-style:italic;
+    font-size:14px;
+    padding:6px 2px;
+  }
+
+  .mini-table-wrap{overflow-x:auto;}
+</style>
+
+<div class="wrap">
+
+  <div class="header">
+    <div class="eyebrow">Notes Breakdown · Full Breakdown Mode</div>
+    <h1>Vedic Astrology Birth Chart Analysis</h1>
+    <div class="meta">Source: chat conversation screenshots &middot; Subject: <b>Harsh</b> &middot; Birth details: <b>Chauri Chaura, Gorakhpur, UP | 29 July 2007, 2:45 AM IST</b> &middot; Chart method: <b>Lahiri ayanamsa, Placidus houses</b></div>
+  </div>
+
+  <div class="note-box">
+    ⚠️ Reliability note (from source): Birth time was described as "approximate." At 2:45 AM the Ascendant sits at 7° Gemini, not near a sign boundary, so the Lagna sign is stated as safe even with a 20–30 min error. Exact degree-based timing techniques (precise Dasha sub-period cusps, divisional chart fine detail) are noted to carry more uncertainty.
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="section">
+    <div class="section-title">Summary</div>
+    <div class="card">
+      This is a Vedic astrology reading for a Gemini Lagna chart, scoped by the user to <b>career &amp; money only</b> (relationships/family/health explicitly excluded from analysis). Mercury (Lagna lord) is strong in the 1st house, in its own sign. A tight three-planet stellium of Saturn, Venus, and Ketu sits together in the 3rd house (Leo). Mars is in its own sign (Aries) in the 11th house. The 2nd house (wealth) lord Moon sits in the 7th house. The reading states no classical Gajakesari Yoga and no Kaal Sarp Dosha are present, but flags a strong (though unnamed) Saturn-Ketu-Venus combination in the 3rd house.
+    </div>
+  </div>
+
+  <!-- KEY TAKEAWAYS -->
+  <div class="section">
+    <div class="section-title">Key Takeaways <span class="count">6</span></div>
+    <div class="grid">
+      <div class="card takeaway">
+        <div class="label">Chart Defining Feature</div>
+        <div class="body">Saturn + Venus + Ketu all sit together in the <b>3rd house (Leo)</b> — described as "a tight three-planet stellium" and "the single most defining feature of this chart."</div>
+      </div>
+      <div class="card takeaway">
+        <div class="label">Lagna Lord Strength</div>
+        <div class="body"><b>Mercury</b> (Lagna lord) sits in its own sign, in the 1st house — called "textbook strong," generally correlating with sharp intellect, adaptability, and a self-driven personality.</div>
+      </div>
+      <div class="card takeaway">
+        <div class="label">Mars Placement</div>
+        <div class="body"><b>Mars</b> is in its own sign (Aries) in the 11th house of gains/networks — read as a good combination for earning through initiative, competitiveness, and elder-sibling or peer networks.</div>
+      </div>
+      <div class="card takeaway">
+        <div class="label">Wealth Lord Placement</div>
+        <div class="body">2nd house (wealth) lord <b>Moon</b> sits in the 7th house — money tends to flow through partnerships, deals, or client/public-facing work rather than solitary saving.</div>
+      </div>
+      <div class="card takeaway">
+        <div class="label">No Gajakesari Yoga</div>
+        <div class="body">Moon and Jupiter are not in an angular relationship (Jupiter is 12th from Moon), so this yoga is explicitly not claimed.</div>
+      </div>
+      <div class="card takeaway">
+        <div class="label">No Kaal Sarp Dosha</div>
+        <div class="body">Rahu (9th house) and Ketu (3rd house) do not have all other planets hemmed between them, so this is stated as not a Kaal Sarp chart.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section">
+    <div class="section-title">Action Items <span class="count">0</span></div>
+    <div class="card">
+      <div class="mini-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Task</th><th>Owner</th><th>Deadline</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Not specified</td>
+            <td>Not specified</td>
+            <td>Not specified</td>
+            <td><span class="badge badge-muted">⏳ Pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="empty">No concrete action items, owners, or deadlines were stated in the source notes.</div>
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title">Open Questions <span class="count">0</span></div>
+    <div class="card">
+      <div class="empty">No unresolved questions or pending decisions were stated in the source notes.</div>
+    </div>
+  </div>
+
+  <!-- RISKS / BLOCKERS -->
+  <div class="section">
+    <div class="section-title">Risks / Blockers <span class="count">3</span></div>
+    <div class="item-list">
+      <div class="item">
+        <div class="item-top">
+          <span class="item-title">Jupiter &amp; Venus Retrograde at Birth</span>
+          <span class="badge badge-orange">🟠 Medium Priority</span>
+        </div>
+        <div class="item-body">Classically read as these significators (wisdom/expansion for Jupiter, relationships/finances for Venus) working in an internalized, delayed, or unconventional way rather than a straightforward one — described as "not bad, but not smooth-and-linear either."</div>
+      </div>
+      <div class="item">
+        <div class="item-top">
+          <span class="item-title">Saturn in Leo (3rd House), Conjunct Ketu</span>
+          <span class="badge badge-orange">🟠 Medium Priority</span>
+        </div>
+        <div class="item-body">Saturn doesn't sit comfortably in Leo (Sun–Saturn are classical adversaries). Combined with Ketu conjunct it in the 3rd house — text cuts off mid-sentence in the source before completing this point.</div>
+      </div>
+      <div class="item">
+        <div class="item-top">
+          <span class="item-title">Blind Spot: Ketu Conjunct the Effort House (3rd)</span>
+          <span class="badge badge-red">🔴 High Priority</span>
+        </div>
+        <div class="item-body">Can mean underselling yourself or losing interest right when consistency would pay off — flagged in the source as "worth watching for."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFLICTS -->
+  <div class="section">
+    <div class="section-title">Conflicts <span class="count">0</span></div>
+    <div class="card">
+      <div class="empty">No conflicting deadlines, owners, decisions, or information were stated in the source notes.</div>
+    </div>
+  </div>
+
+  <!-- ADDITIONAL NOTES -->
+  <div class="section">
+    <div class="section-title">Additional Notes</div>
+
+    <details class="collapsible" open>
+      <summary>Career Pattern — Interpretation <span class="chev">▶</span></summary>
+      <div class="panel">
+        <p>Reading Lagna lord Mercury (strong, own sign, 1st house) together with the Leo stellium (Saturn+Venus+Ketu, 3rd house) and Mars (own sign, 11th house):</p>
+        <ul>
+          <li><b>Core pattern:</b> Quick-thinking, versatile, communicative — but the real strength "doesn't come free." It gets built through repeated, sustained personal effort (3rd house = self-effort), often without early external recognition (Saturn there).</li>
+          <li><b>Blind spot:</b> Ketu conjunct that effort-house can mean underselling yourself or losing interest right when consistency would pay off.</li>
+          <li><b>Financial habit tendency:</b> 2nd house (wealth) lord Moon sits in the 7th house — money tends to flow through partnerships, deals, or client/public-facing work rather than solitary saving. Described as a "good collaborator" trait (text cuts off in source before completing).</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="collapsible">
+      <summary>Yogas &amp; Doshas <span class="chev">▶</span></summary>
+      <div class="panel">
+        <ul>
+          <li><b>No classical Gajakesari Yoga</b> — Moon and Jupiter aren't in an angular relationship to each other (Jupiter is 12th from Moon), so this yoga is not claimed, even though "people often assume Jupiter aspects matter automatically."</li>
+          <li><b>Saturn-Ketu-Venus conjunction in 3rd house</b> — not a "named" classical dosha, but flagged as a strong combination. Often shows up as someone who has to build things through sustained, sometimes solitary effort, with real skill (Venus = art/finesse) but slow external recognition (Saturn) and a tendency toward detachment or changing direction (Ketu).</li>
+          <li><b>No major dosha like Kaal Sarp</b> — Rahu (9th) and Ketu (3rd) don't have all other planets hemmed between them, so this isn't a Kaal Sarp chart.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="collapsible">
+      <summary>Functional Benefics/Malefics for Gemini Lagna <span class="chev">▶</span></summary>
+      <div class="panel">
+        <div class="mini-table-wrap">
+        <table>
+          <thead>
+            <tr><th>Planet</th><th>Rules (Houses)</th><th>Classical Role for Gemini Lagna</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mercury</td>
+              <td>1st, 4th</td>
+              <td>Strong functional benefic (Lagna lord)</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p style="margin-top:10px;"><i>Note: the source table was cut off in the screenshot after the Mercury row — remaining planet rows were not visible and are not included here.</i></p>
+      </div>
+    </details>
+
+    <details class="collapsible">
+      <summary>Scope of This Reading &amp; Reliability Caveats <span class="chev">▶</span></summary>
+      <div class="panel">
+        <ul>
+          <li>User specified the reading should cover <b>just career &amp; money</b> — not relationships, family, or health.</li>
+          <li>Birth time given as "approximate." At 2:45 AM the Ascendant is at 7° Gemini, not near a sign boundary, so the Lagna sign is stated as safe even with a 20–30 min error.</li>
+          <li>Exact degree-based timing techniques (precise Dasha sub-period cusps, divisional chart fine detail) are noted to carry more uncertainty; the source states this will be flagged again where it matters.</li>
+        </ul>
+      </div>
+    </details>
+
+  </div>
+
+</div>
