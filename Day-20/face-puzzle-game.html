@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Face Puzzle</title>
+<style>
+  :root{
+    --accent:#7c5cff;
+    --accent2:#ff6b9d;
+    --success:#2ecc71;
+    --dragging:#ffa726;
+    --panel-bg:rgba(255,255,255,0.08);
+    --panel-border:rgba(255,255,255,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;height:100%;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(135deg,#1e1b4b 0%,#4c1d95 40%,#7c3aed 70%,#db2777 100%);
+    color:#fff;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+  #app{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:20px 14px 40px;
+  }
+  h1{
+    font-size:1.6rem;
+    margin:6px 0 4px;
+    letter-spacing:0.5px;
+    text-align:center;
+    background:linear-gradient(90deg,#fff,#ffd6ec);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .subtitle{
+    opacity:0.75;
+    font-size:0.9rem;
+    margin-bottom:18px;
+    text-align:center;
+  }
+  .hidden{display:none !important;}
+  .card{
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);
+    border-radius:18px;
+    padding:20px;
+    width:100%;
+    max-width:560px;
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.35);
+    margin-bottom:20px;
+  }
+  .video-wrap{
+    position:relative;
+    width:100%;
+    max-width:480px;
+    aspect-ratio:1/1;
+    margin:0 auto 16px;
+    border-radius:16px;
+    overflow:hidden;
+    background:#000;
+    box-shadow:0 0 0 3px rgba(255,255,255,0.15);
+  }
+  video{
+    width:100%;height:100%;object-fit:cover;
+    transform:scaleX(-1);
+    display:block;
+  }
+  .cam-msg{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:20px;
+    font-size:0.95rem;
+    background:rgba(0,0,0,0.55);
+  }
+  .btn-row{
+    display:flex;flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+  }
+  button{
+    font-family:inherit;
+    font-size:0.95rem;
+    font-weight:600;
+    border:none;
+    border-radius:12px;
+    padding:12px 20px;
+    cursor:pointer;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 4px 14px rgba(124,92,255,0.4);
+    transition:transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  }
+  button:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(124,92,255,0.55);}
+  button:active{transform:translateY(0);}
+  button:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none;}
+  button.secondary{
+    background:rgba(255,255,255,0.12);
+    box-shadow:none;
+    border:1px solid rgba(255,255,255,0.25);
+  }
+  button.secondary:hover{background:rgba(255,255,255,0.2);}
+
+  .preview-img-wrap{
+    width:100%;max-width:400px;aspect-ratio:1/1;margin:0 auto 16px;
+    border-radius:16px;overflow:hidden;box-shadow:0 0 0 3px rgba(255,255,255,0.15);
+  }
+  .preview-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  .diff-title{
+    text-align:center;font-size:0.95rem;opacity:0.85;margin:6px 0 12px;
+  }
+  .diff-grid{
+    display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;
+  }
+  .diff-btn{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    min-width:100px;
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:none;
+  }
+  .diff-btn strong{font-size:1.1rem;}
+  .diff-btn span{font-size:0.75rem;opacity:0.75;font-weight:400;}
+  .diff-btn:hover{background:rgba(255,255,255,0.18);}
+
+  /* Game screen */
+  .stats-bar{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    width:100%;
+    max-width:520px;
+    margin:0 auto 14px;
+    flex-wrap:wrap;
+  }
+  .stat{
+    flex:1;
+    min-width:90px;
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);
+    border-radius:12px;
+    padding:8px 10px;
+    text-align:center;
+  }
+  .stat .label{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.6px;opacity:0.65;}
+  .stat .value{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums;}
+
+  .board-wrap{
+    position:relative;
+    width:min(92vw,520px);
+    margin:0 auto;
+  }
+  .board{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    border-radius:14px;
+    overflow:hidden;
+    background:#111;
+    box-shadow:0 10px 30px rgba(0,0,0,0.45), 0 0 0 3px rgba(255,255,255,0.12);
+    touch-action:none;
+    user-select:none;
+  }
+  .tile{
+    position:absolute;
+    top:0;left:0;
+    background-repeat:no-repeat;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,0.35);
+    cursor:grab;
+    will-change:transform;
+    -webkit-user-drag:none;
+    touch-action:none;
+  }
+  .tile.dragging{
+    cursor:grabbing;
+    box-shadow:inset 0 0 0 4px var(--dragging), 0 6px 18px rgba(0,0,0,0.5);
+    z-index:1000;
+    filter:brightness(1.08);
+  }
+  .tile.correct{
+    box-shadow:inset 0 0 0 3px var(--success);
+  }
+
+  .game-controls{
+    display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;
+  }
+
+  /* Result overlay */
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(10,6,24,0.78);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+    z-index:2000;
+    backdrop-filter:blur(6px);
+  }
+  .result-card{
+    background:linear-gradient(160deg,rgba(45,25,90,0.95),rgba(80,20,80,0.95));
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:20px;
+    padding:28px 24px;
+    max-width:420px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+    animation:pop 0.35s ease;
+  }
+  @keyframes pop{
+    from{transform:scale(0.85);opacity:0;}
+    to{transform:scale(1);opacity:1;}
+  }
+  .result-card h2{
+    margin:0 0 4px;font-size:1.6rem;
+  }
+  .trophy{font-size:2.6rem;margin-bottom:6px;}
+  .result-stats{
+    display:flex;justify-content:center;gap:16px;margin:16px 0;flex-wrap:wrap;
+  }
+  .result-stats div{
+    background:rgba(255,255,255,0.1);
+    border-radius:12px;
+    padding:10px 16px;
+    min-width:90px;
+  }
+  .result-stats .label{font-size:0.7rem;opacity:0.7;text-transform:uppercase;}
+  .result-stats .value{font-size:1.25rem;font-weight:700;}
+
+  .leaderboard{
+    text-align:left;
+    background:rgba(0,0,0,0.25);
+    border-radius:12px;
+    padding:10px 14px;
+    margin:14px 0;
+    max-height:180px;
+    overflow-y:auto;
+  }
+  .leaderboard h3{
+    margin:2px 0 8px;font-size:0.85rem;opacity:0.85;text-transform:uppercase;letter-spacing:0.5px;
+  }
+  .lb-row{
+    display:flex;justify-content:space-between;font-size:0.85rem;
+    padding:4px 0;border-bottom:1px dashed rgba(255,255,255,0.12);
+  }
+  .lb-row:last-child{border-bottom:none;}
+  .lb-row.new-score{color:#ffe27a;font-weight:700;}
+  .lb-empty{opacity:0.6;font-size:0.8rem;padding:6px 0;}
+  .lb-rank{opacity:0.6;margin-right:6px;}
+
+  .lb-section{margin-bottom:14px;}
+  .lb-section:last-child{margin-bottom:0;}
+
+  footer{
+    margin-top:auto;
+    opacity:0.5;
+    font-size:0.75rem;
+    padding-top:20px;
+    text-align:center;
+  }
+
+  @media (max-width:480px){
+    h1{font-size:1.35rem;}
+    .stat .value{font-size:1rem;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>🧩 Face Puzzle</h1>
+  <div class="subtitle">Snap a selfie, scramble it, and race to put your face back together.</div>
+
+  <!-- SCREEN 1: CAMERA -->
+  <div id="screen-camera" class="card">
+    <div class="video-wrap">
+      <video id="video" autoplay playsinline muted></video>
+      <div id="cam-msg" class="cam-msg hidden"></div>
+    </div>
+    <div class="btn-row">
+      <button id="btn-take-photo" disabled>📸 Take Photo</button>
+      <button id="btn-retry-cam" class="secondary hidden">🔄 Retry Camera</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: PREVIEW + DIFFICULTY -->
+  <div id="screen-preview" class="card hidden">
+    <div class="preview-img-wrap">
+      <img id="preview-img" alt="Captured face">
+    </div>
+    <div class="diff-title">Choose your difficulty</div>
+    <div class="diff-grid">
+      <button class="diff-btn" data-n="3"><strong>3 × 3</strong><span>Easy</span></button>
+      <button class="diff-btn" data-n="4"><strong>4 × 4</strong><span>Medium</span></button>
+      <button class="diff-btn" data-n="5"><strong>5 × 5</strong><span>Hard</span></button>
+    </div>
+    <div class="btn-row" style="margin-top:14px;">
+      <button id="btn-retake" class="secondary">↩️ Retake Photo</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: GAME -->
+  <div id="screen-game" class="hidden" style="width:100%;">
+    <div class="stats-bar">
+      <div class="stat"><div class="label">Time</div><div class="value" id="stat-time">00:00.0</div></div>
+      <div class="stat"><div class="label">Moves</div><div class="value" id="stat-moves">0</div></div>
+      <div class="stat"><div class="label">Correct</div><div class="value" id="stat-correct">0/0</div></div>
+    </div>
+    <div class="board-wrap">
+      <div id="board" class="board"></div>
+    </div>
+    <div class="game-controls">
+      <button id="btn-restart-shuffle" class="secondary">🔀 Reshuffle</button>
+      <button id="btn-new-photo-ingame" class="secondary">📷 New Photo</button>
+    </div>
+  </div>
+
+  <div id="leaderboard-home" class="card hidden" style="max-width:520px;">
+    <div id="lb-home-content"></div>
+  </div>
+
+  <footer>Your photo never leaves your device — everything runs locally in the browser.</footer>
+</div>
+
+<!-- RESULT OVERLAY -->
+<div id="overlay-result" class="overlay hidden">
+  <div class="result-card">
+    <div class="trophy">🏆</div>
+    <h2>Puzzle Solved!</h2>
+    <div class="result-stats">
+      <div><div class="label">Time</div><div class="value" id="res-time">00:00.0</div></div>
+      <div><div class="label">Moves</div><div class="value" id="res-moves">0</div></div>
+      <div><div class="label">Grid</div><div class="value" id="res-diff">3×3</div></div>
+    </div>
+    <div class="leaderboard">
+      <h3 id="res-lb-title">Best Times — 3×3</h3>
+      <div id="res-lb-content"></div>
+    </div>
+    <div class="btn-row">
+      <button id="btn-play-again">🔁 Play Again</button>
+      <button id="btn-new-photo" class="secondary">📷 New Photo</button>
+    </div>
+  </div>
+</div>
+
+<canvas id="capture-canvas" width="600" height="600" style="display:none;"></canvas>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- State ----------
+  let stream = null;
+  let capturedDataURL = null;
+  let currentDifficulty = 3;
+  let tiles = [];       // array of tile objects indexed by piece index (correctIndex)
+  let slots = [];       // slots[slotIndex] = tile object currently there
+  let moveCount = 0;
+  let gameActive = false;
+  let startTime = 0;
+  let rafId = null;
+  let dragState = null;
+
+  // ---------- DOM refs ----------
+  const video = document.getElementById('video');
+  const camMsg = document.getElementById('cam-msg');
+  const btnTakePhoto = document.getElementById('btn-take-photo');
+  const btnRetryCam = document.getElementById('btn-retry-cam');
+  const screenCamera = document.getElementById('screen-camera');
+  const screenPreview = document.getElementById('screen-preview');
+  const screenGame = document.getElementById('screen-game');
+  const previewImg = document.getElementById('preview-img');
+  const btnRetake = document.getElementById('btn-retake');
+  const diffButtons = document.querySelectorAll('.diff-btn');
+  const board = document.getElementById('board');
+  const statTime = document.getElementById('stat-time');
+  const statMoves = document.getElementById('stat-moves');
+  const statCorrect = document.getElementById('stat-correct');
+  const btnReshuffle = document.getElementById('btn-restart-shuffle');
+  const btnNewPhotoInGame = document.getElementById('btn-new-photo-ingame');
+  const overlayResult = document.getElementById('overlay-result');
+  const resTime = document.getElementById('res-time');
+  const resMoves = document.getElementById('res-moves');
+  const resDiff = document.getElementById('res-diff');
+  const resLbTitle = document.getElementById('res-lb-title');
+  const resLbContent = document.getElementById('res-lb-content');
+  const btnPlayAgain = document.getElementById('btn-play-again');
+  const btnNewPhoto = document.getElementById('btn-new-photo');
+  const captureCanvas = document.getElementById('capture-canvas');
+  const leaderboardHome = document.getElementById('leaderboard-home');
+  const lbHomeContent = document.getElementById('lb-home-content');
+
+  // ---------- Camera ----------
+  async function initCamera(){
+    camMsg.classList.add('hidden');
+    btnRetryCam.classList.add('hidden');
+    btnTakePhoto.disabled = true;
+
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      showCamError("Camera access isn't supported in this browser. Try a recent version of Chrome, Firefox, or Safari over HTTPS.");
+      return;
+    }
+
+    try{
+      stream = await navigator.mediaDevices.getUserMedia({
+        video:{ facingMode:'user', width:{ideal:960}, height:{ideal:960} },
+        audio:false
+      });
+      video.srcObject = stream;
+      await video.play().catch(()=>{});
+      btnTakePhoto.disabled = false;
+    }catch(err){
+      let msg = "We couldn't access your camera.";
+      if(err && err.name === 'NotAllowedError'){
+        msg = "Camera permission was denied. Please allow camera access in your browser settings and try again.";
+      }else if(err && err.name === 'NotFoundError'){
+        msg = "No camera was found on this device.";
+      }else if(err && err.name === 'NotReadableError'){
+        msg = "Your camera seems to be in use by another application.";
+      }else if(location.protocol !== 'https:' && location.hostname !== 'localhost'){
+        msg = "Camera access requires HTTPS (or localhost). Please load this page over a secure connection.";
+      }
+      showCamError(msg);
+    }
+  }
+
+  function showCamError(msg){
+    camMsg.textContent = msg;
+    camMsg.classList.remove('hidden');
+    btnRetryCam.classList.remove('hidden');
+    btnTakePhoto.disabled = true;
+  }
+
+  btnRetryCam.addEventListener('click', initCamera);
+
+  btnTakePhoto.addEventListener('click', ()=>{
+    if(!video.videoWidth || !video.videoHeight) return;
+    const vw = video.videoWidth, vh = video.videoHeight;
+    const size = Math.min(vw, vh);
+    const sx = (vw - size)/2, sy = (vh - size)/2;
+    const ctx = captureCanvas.getContext('2d');
+    const out = captureCanvas.width; // 600
+    ctx.clearRect(0,0,out,out);
+    // mirror horizontally so the captured photo matches the mirrored live preview
+    ctx.save();
+    ctx.translate(out,0);
+    ctx.scale(-1,1);
+    ctx.drawImage(video, sx, sy, size, size, 0, 0, out, out);
+    ctx.restore();
+    capturedDataURL = captureCanvas.toDataURL('image/png');
+    previewImg.src = capturedDataURL;
+    showScreen('preview');
+  });
+
+  btnRetake.addEventListener('click', ()=>{
+    showScreen('camera');
+  });
+
+  diffButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      currentDifficulty = parseInt(btn.dataset.n, 10);
+      startPuzzle(currentDifficulty);
+    });
+  });
+
+  btnNewPhotoInGame.addEventListener('click', ()=>{
+    stopTimer();
+    showScreen('camera');
+  });
+
+  btnNewPhoto.addEventListener('click', ()=>{
+    hideResult();
+    showScreen('camera');
+  });
+
+  btnPlayAgain.addEventListener('click', ()=>{
+    hideResult();
+    startPuzzle(currentDifficulty);
+  });
+
+  btnReshuffle.addEventListener('click', ()=>{
+    startPuzzle(currentDifficulty);
+  });
+
+  function showScreen(name){
+    screenCamera.classList.toggle('hidden', name !== 'camera');
+    screenPreview.classList.toggle('hidden', name !== 'preview');
+    screenGame.classList.toggle('hidden', name !== 'game');
+    leaderboardHome.classList.toggle('hidden', name !== 'camera');
+    if(name === 'camera'){
+      renderHomeLeaderboard();
+    }
+  }
+
+  // ---------- Puzzle generation ----------
+  function startPuzzle(n){
+    stopTimer();
+    board.innerHTML = '';
+    tiles = [];
+    slots = new Array(n*n).fill(null);
+    moveCount = 0;
+
+    // Build a shuffled permutation of slot indices, guaranteed not solved.
+    let order;
+    do{
+      order = shuffle([...Array(n*n).keys()]);
+    }while(isIdentity(order) && n*n > 1);
+
+    for(let i=0; i<n*n; i++){
+      const correctRow = Math.floor(i/n);
+      const correctCol = i % n;
+      const currentSlot = order[i];
+
+      const tileEl = document.createElement('div');
+      tileEl.className = 'tile';
+      tileEl.style.width = (100/n) + '%';
+      tileEl.style.height = (100/n) + '%';
+      tileEl.style.backgroundImage = `url(${capturedDataURL})`;
+      tileEl.style.backgroundSize = `${n*100}% ${n*100}%`;
+      const bgX = n > 1 ? (correctCol * 100/(n-1)) : 0;
+      const bgY = n > 1 ? (correctRow * 100/(n-1)) : 0;
+      tileEl.style.backgroundPosition = `${bgX}% ${bgY}%`;
+      tileEl.style.transition = 'transform 0.2s ease';
+
+      const tile = {
+        el: tileEl,
+        correctIndex: i,
+        currentSlot: currentSlot
+      };
+      applyTransform(tile, currentSlot, n);
+      updateCorrectness(tile, n);
+
+      tileEl.addEventListener('pointerdown', (e)=> onPointerDown(e, tile, n));
+
+      tiles.push(tile);
+      slots[currentSlot] = tile;
+      board.appendChild(tileEl);
+    }
+
+    currentDifficulty = n;
+    updateStats(n);
+    showScreen('game');
+    gameActive = true;
+    startTime = performance.now();
+    tickTimer();
+  }
+
+  function isIdentity(order){
+    return order.every((v,i)=> v === i);
+  }
+
+  function shuffle(arr){
+    for(let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function applyTransform(tile, slotIndex, n){
+    const col = slotIndex % n;
+    const row = Math.floor(slotIndex / n);
+    tile.el.style.transform = `translate(${col*100}%, ${row*100}%)`;
+  }
+
+  function updateCorrectness(tile, n){
+    tile.el.classList.toggle('correct', tile.currentSlot === tile.correctIndex);
+  }
+
+  // ---------- Drag & touch (Pointer Events) ----------
+  function onPointerDown(e, tile, n){
+    if(!gameActive) return;
+    e.preventDefault();
+    tile.el.setPointerCapture(e.pointerId);
+
+    const boardRect = board.getBoundingClientRect();
+    const tileRect = tile.el.getBoundingClientRect();
+
+    dragState = {
+      tile,
+      n,
+      pointerId: e.pointerId,
+      offsetX: e.clientX - tileRect.left,
+      offsetY: e.clientY - tileRect.top,
+      boardRect,
+      tileSize: tileRect.width,
+      startSlot: tile.currentSlot
+    };
+
+    tile.el.style.transition = 'none';
+    tile.el.classList.add('dragging');
+
+    const onMove = (ev)=> onPointerMove(ev);
+    const onUp = (ev)=> onPointerUp(ev, onMove, onUp);
+
+    tile.el.addEventListener('pointermove', onMove);
+    tile.el.addEventListener('pointerup', onUp);
+    tile.el.addEventListener('pointercancel', onUp);
+  }
+
+  function onPointerMove(e){
+    if(!dragState) return;
+    const { boardRect, offsetX, offsetY, tileSize } = dragState;
+    let x = e.clientX - boardRect.left - offsetX;
+    let y = e.clientY - boardRect.top - offsetY;
+    const max = boardRect.width - tileSize;
+    x = Math.max(-tileSize*0.4, Math.min(max + tileSize*0.4, x));
+    y = Math.max(-tileSize*0.4, Math.min(max + tileSize*0.4, y));
+    dragState.lastX = x;
+    dragState.lastY = y;
+    dragState.tile.el.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
+  function onPointerUp(e, onMove, onUp){
+    if(!dragState) return;
+    const { tile, n, boardRect, tileSize, startSlot, lastX, lastY } = dragState;
+
+    tile.el.removeEventListener('pointermove', onMove);
+    tile.el.removeEventListener('pointerup', onUp);
+    tile.el.removeEventListener('pointercancel', onUp);
+    try{ tile.el.releasePointerCapture(e.pointerId); }catch(err){}
+
+    tile.el.classList.remove('dragging');
+    tile.el.style.transition = 'transform 0.2s ease';
+
+    const x = (lastX !== undefined) ? lastX : 0;
+    const y = (lastY !== undefined) ? lastY : 0;
+
+    let col = Math.round(x / tileSize);
+    let row = Math.round(y / tileSize);
+    col = Math.max(0, Math.min(n-1, col));
+    row = Math.max(0, Math.min(n-1, row));
+    const targetSlot = row*n + col;
+
+    if(targetSlot !== startSlot){
+      const otherTile = slots[targetSlot];
+      // swap
+      slots[startSlot] = otherTile;
+      slots[targetSlot] = tile;
+      tile.currentSlot = targetSlot;
+      applyTransform(tile, targetSlot, n);
+      updateCorrectness(tile, n);
+
+      if(otherTile){
+        otherTile.currentSlot = startSlot;
+        applyTransform(otherTile, startSlot, n);
+        updateCorrectness(otherTile, n);
+      }
+
+      moveCount++;
+      updateStats(n);
+      checkWin(n);
+    }else{
+      applyTransform(tile, startSlot, n);
+    }
+
+    dragState = null;
+  }
+
+  // ---------- Stats & timer ----------
+  function updateStats(n){
+    statMoves.textContent = moveCount;
+    const correctCount = tiles.filter(t => t.currentSlot === t.correctIndex).length;
+    statCorrect.textContent = `${correctCount}/${n*n}`;
+  }
+
+  function tickTimer(){
+    if(!gameActive) return;
+    const elapsed = performance.now() - startTime;
+    statTime.textContent = formatTime(elapsed);
+    rafId = requestAnimationFrame(tickTimer);
+  }
+
+  function stopTimer(){
+    gameActive = false;
+    if(rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  function formatTime(ms){
+    const totalMs = Math.max(0, ms);
+    const minutes = Math.floor(totalMs / 60000);
+    const seconds = Math.floor((totalMs % 60000) / 1000);
+    const tenths = Math.floor((totalMs % 1000) / 100);
+    return `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}.${tenths}`;
+  }
+
+  // ---------- Win detection ----------
+  function checkWin(n){
+    const allCorrect = tiles.every(t => t.currentSlot === t.correctIndex);
+    if(allCorrect){
+      const finalMs = performance.now() - startTime;
+      stopTimer();
+      statTime.textContent = formatTime(finalMs);
+      showResult(finalMs, moveCount, n);
+    }
+  }
+
+  // ---------- Results & leaderboard ----------
+  const LB_KEY = 'facePuzzleLeaderboard';
+
+  function loadScores(){
+    try{
+      const raw = localStorage.getItem(LB_KEY);
+      const data = raw ? JSON.parse(raw) : {};
+      return { "3": data["3"] || [], "4": data["4"] || [], "5": data["5"] || [] };
+    }catch(e){
+      return { "3":[], "4":[], "5":[] };
+    }
+  }
+
+  function saveScore(n, timeMs, moves){
+    const scores = loadScores();
+    const key = String(n);
+    const entry = {
+      time: timeMs,
+      moves: moves,
+      date: new Date().toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}),
+      difficulty: `${n}×${n}`
+    };
+    scores[key].push(entry);
+    scores[key].sort((a,b)=> a.time - b.time);
+    scores[key] = scores[key].slice(0,5);
+    try{
+      localStorage.setItem(LB_KEY, JSON.stringify(scores));
+    }catch(e){ /* storage unavailable — ignore silently */ }
+    return { scores, key, entry };
+  }
+
+  function showResult(timeMs, moves, n){
+    const { scores, key, entry } = saveScore(n, timeMs, moves);
+
+    resTime.textContent = formatTime(timeMs);
+    resMoves.textContent = moves;
+    resDiff.textContent = `${n}×${n}`;
+    resLbTitle.textContent = `Best Times — ${n}×${n}`;
+
+    resLbContent.innerHTML = '';
+    const list = scores[key];
+    if(list.length === 0){
+      resLbContent.innerHTML = '<div class="lb-empty">No times yet.</div>';
+    }else{
+      list.forEach((s, idx)=>{
+        const row = document.createElement('div');
+        const isNew = (s === entry) || (s.time === entry.time && s.moves === entry.moves && s.date === entry.date);
+        row.className = 'lb-row' + (isNew ? ' new-score' : '');
+        row.innerHTML = `<span><span class="lb-rank">#${idx+1}</span>${formatTime(s.time)}</span><span>${s.moves} moves · ${s.date}</span>`;
+        resLbContent.appendChild(row);
+      });
+    }
+
+    overlayResult.classList.remove('hidden');
+  }
+
+  function hideResult(){
+    overlayResult.classList.add('hidden');
+  }
+
+  function renderHomeLeaderboard(){
+    const scores = loadScores();
+    const hasAny = scores["3"].length || scores["4"].length || scores["5"].length;
+    if(!hasAny){
+      leaderboardHome.classList.add('hidden');
+      return;
+    }
+    leaderboardHome.classList.remove('hidden');
+    lbHomeContent.innerHTML = '<h3 style="margin-top:0;opacity:0.85;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.5px;">🏆 Leaderboard</h3>';
+    ["3","4","5"].forEach(key=>{
+      const section = document.createElement('div');
+      section.className = 'lb-section';
+      const list = scores[key];
+      let rowsHtml = '';
+      if(list.length === 0){
+        rowsHtml = '<div class="lb-empty">No times yet.</div>';
+      }else{
+        rowsHtml = list.map((s, idx)=>
+          `<div class="lb-row"><span><span class="lb-rank">#${idx+1}</span>${formatTime(s.time)}</span><span>${s.moves} moves · ${s.date}</span></div>`
+        ).join('');
+      }
+      section.innerHTML = `<h3>${key}×${key}</h3>${rowsHtml}`;
+      lbHomeContent.appendChild(section);
+    });
+  }
+
+  // ---------- Init ----------
+  initCamera();
+  showScreen('camera');
+})();
+</script>
+</body>
+</html>
