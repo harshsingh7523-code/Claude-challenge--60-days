@@ -1,0 +1,668 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --bg:#0A0E1A;
+  --bg-alt:#0D1220;
+  --surface:#121a2e;
+  --surface-2:#161f38;
+  --border:rgba(148,163,197,0.12);
+  --border-strong:rgba(148,163,197,0.22);
+  --text-hi:#E9EDF9;
+  --text-mid:#9AA6C4;
+  --text-low:#5B6685;
+  --teal:#4FD8C9;
+  --violet:#9C8CFF;
+  --amber:#F5A742;
+  --rose:#FB6B84;
+  --green:#3DDC97;
+  --mono:'JetBrains Mono',monospace;
+  --disp:'Space Grotesk',sans-serif;
+  --body:'Inter',sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:
+    radial-gradient(1100px 500px at 15% -5%, rgba(79,216,201,0.08), transparent 60%),
+    radial-gradient(900px 500px at 90% 0%, rgba(156,140,255,0.07), transparent 55%),
+    var(--bg);
+  color:var(--text-hi);
+  font-family:var(--body);
+  line-height:1.5;
+  padding-bottom:80px;
+}
+::selection{background:rgba(79,216,201,0.3);}
+
+.wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+
+/* ---------- Scanline signature ---------- */
+.scanband{
+  position:relative; overflow:hidden;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(79,216,201,0.05), transparent);
+}
+.scanband::after{
+  content:""; position:absolute; left:0; top:0; height:2px; width:100%;
+  background:linear-gradient(90deg, transparent, var(--teal), transparent);
+  animation:scan 5s linear infinite; opacity:0.7;
+}
+@keyframes scan{0%{top:0%;}100%{top:100%;}}
+
+/* ---------- Header ---------- */
+header.top{padding:26px 0 18px; position:relative;}
+.brand{display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+.brand-left{display:flex; align-items:center; gap:12px;}
+.brand-mark{
+  width:38px; height:38px; border-radius:10px;
+  background:conic-gradient(from 220deg, var(--teal), var(--violet), var(--teal));
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-weight:700; color:#08101c; font-size:14px;
+  box-shadow:0 0 0 1px var(--border-strong), 0 8px 24px -8px rgba(79,216,201,0.4);
+}
+.brand-name{font-family:var(--disp); font-weight:600; font-size:16px; letter-spacing:0.2px;}
+.brand-sub{font-family:var(--mono); font-size:11px; color:var(--text-low); letter-spacing:0.5px; text-transform:uppercase;}
+.scan-tag{
+  font-family:var(--mono); font-size:11px; color:var(--teal); border:1px solid rgba(79,216,201,0.3);
+  padding:6px 12px; border-radius:20px; display:flex; align-items:center; gap:8px; background:rgba(79,216,201,0.06);
+}
+.dot-live{width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal); animation:pulse 1.6s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+
+.hero-title{font-family:var(--disp); font-weight:700; font-size:34px; letter-spacing:-0.5px; margin-top:22px; max-width:680px;}
+.hero-desc{color:var(--text-mid); font-size:14.5px; margin-top:10px; max-width:620px;}
+.disclaimer-strip{
+  margin-top:18px; border:1px solid var(--border); background:var(--surface);
+  border-radius:12px; padding:12px 16px; font-size:12.5px; color:var(--text-mid);
+  display:flex; gap:10px; align-items:flex-start;
+}
+.disclaimer-strip b{color:var(--text-hi); font-weight:600;}
+.disclaimer-strip .ico{color:var(--amber); font-family:var(--mono); flex-shrink:0;}
+
+/* ---------- Section shell ---------- */
+section{padding:46px 0 0;}
+.sec-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap;}
+.sec-eyebrow{font-family:var(--mono); font-size:11px; color:var(--teal); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px;}
+.sec-title{font-family:var(--disp); font-size:22px; font-weight:600;}
+.sec-note{font-size:12px; color:var(--text-low); font-family:var(--mono); text-align:right;}
+.tag-fact{
+  font-family:var(--mono); font-size:10px; letter-spacing:0.5px; text-transform:uppercase;
+  color:var(--green); border:1px solid rgba(61,220,151,0.35); background:rgba(61,220,151,0.08);
+  padding:2px 8px; border-radius:20px;
+}
+.tag-est{
+  font-family:var(--mono); font-size:10px; letter-spacing:0.5px; text-transform:uppercase;
+  color:var(--amber); border:1px solid rgba(245,167,66,0.35); background:rgba(245,167,66,0.08);
+  padding:2px 8px; border-radius:20px;
+}
+
+/* ---------- Score row ---------- */
+.score-grid{display:grid; grid-template-columns:1.1fr 1.1fr 1.4fr; gap:16px;}
+@media(max-width:900px){.score-grid{grid-template-columns:1fr;}}
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px;
+  position:relative; overflow:hidden;
+}
+.card:hover{border-color:var(--border-strong);}
+.score-card{display:flex; align-items:center; gap:18px;}
+.gauge{position:relative; width:96px; height:96px; flex-shrink:0;}
+.gauge svg{transform:rotate(-90deg);}
+.gauge-val{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+.gauge-num{font-family:var(--mono); font-weight:700; font-size:22px;}
+.gauge-max{font-family:var(--mono); font-size:9px; color:var(--text-low);}
+.score-label{font-family:var(--disp); font-weight:600; font-size:15px; margin-bottom:4px;}
+.score-band{font-family:var(--mono); font-size:11.5px; display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; margin-bottom:8px;}
+.score-desc{font-size:12px; color:var(--text-mid); line-height:1.5;}
+
+.band-red{color:#FB6B84; background:rgba(251,107,132,0.1); border:1px solid rgba(251,107,132,0.3);}
+.band-orange{color:#F5A742; background:rgba(245,167,66,0.1); border:1px solid rgba(245,167,66,0.3);}
+.band-yellow{color:#F0D95F; background:rgba(240,217,95,0.1); border:1px solid rgba(240,217,95,0.3);}
+.band-green{color:#3DDC97; background:rgba(61,220,151,0.1); border:1px solid rgba(61,220,151,0.3);}
+
+/* ---------- Stat strip card ---------- */
+.stat-card .stat-row{display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px dashed var(--border);}
+.stat-card .stat-row:last-child{border-bottom:none;}
+.stat-key{font-size:12.5px; color:var(--text-mid);}
+.stat-val{font-family:var(--mono); font-weight:700; font-size:15px; color:var(--text-hi);}
+.stat-val.teal{color:var(--teal);}
+.stat-val.violet{color:var(--violet);}
+
+/* ---------- Heatmap (signature) ---------- */
+.heatmap-card{padding:24px;}
+.heatmap-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px;}
+@media(max-width:700px){.heatmap-grid{grid-template-columns:repeat(2,1fr);}}
+.heat-cell{
+  border-radius:12px; padding:14px 14px 12px; border:1px solid var(--border);
+  position:relative; overflow:hidden; min-height:92px; display:flex; flex-direction:column; justify-content:space-between;
+}
+.heat-cell .hc-name{font-family:var(--disp); font-size:13px; font-weight:600; position:relative; z-index:2;}
+.heat-cell .hc-meta{font-family:var(--mono); font-size:10.5px; color:rgba(233,237,249,0.75); position:relative; z-index:2;}
+.heat-cell .hc-fill{position:absolute; inset:0; opacity:0.9; z-index:1;}
+.heat-legend{display:flex; gap:16px; margin-top:16px; flex-wrap:wrap; font-family:var(--mono); font-size:10.5px; color:var(--text-low);}
+.heat-legend span{display:inline-flex; align-items:center; gap:6px;}
+.sw{width:10px; height:10px; border-radius:3px; display:inline-block;}
+
+/* ---------- Company ranking ---------- */
+.rank-list{display:flex; flex-direction:column; gap:10px; margin-top:6px;}
+.rank-row{
+  display:grid; grid-template-columns:28px 150px 1fr 46px; align-items:center; gap:14px;
+  background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 16px;
+}
+@media(max-width:640px){.rank-row{grid-template-columns:24px 1fr 46px; }.rank-bar-wrap{display:none;}}
+.rank-idx{font-family:var(--mono); color:var(--text-low); font-size:12px;}
+.rank-name{font-family:var(--disp); font-weight:600; font-size:13.5px;}
+.rank-sub{font-family:var(--mono); font-size:10px; color:var(--text-low); margin-top:2px;}
+.rank-bar-wrap{height:8px; background:rgba(255,255,255,0.05); border-radius:6px; overflow:hidden;}
+.rank-bar{height:100%; border-radius:6px; background:linear-gradient(90deg, var(--teal), var(--violet));}
+.rank-score{font-family:var(--mono); font-weight:700; font-size:13px; text-align:right;}
+
+/* ---------- Data collection matrix ---------- */
+.matrix-scroll{overflow-x:auto; margin-top:8px; border:1px solid var(--border); border-radius:14px;}
+table.matrix{border-collapse:collapse; width:100%; min-width:760px; font-size:12px;}
+table.matrix th, table.matrix td{padding:10px 12px; text-align:center; border-bottom:1px solid var(--border);}
+table.matrix th{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-low); background:var(--surface-2); position:sticky; top:0;}
+table.matrix td:first-child, table.matrix th:first-child{text-align:left; font-family:var(--disp); font-weight:600; font-size:12.5px; color:var(--text-hi); background:var(--surface); position:sticky; left:0;}
+table.matrix tr:hover td{background:rgba(79,216,201,0.04);}
+.dot-full{color:var(--rose); font-size:15px;}
+.dot-partial{color:var(--amber); font-size:15px;}
+.dot-low{color:var(--text-low); font-size:15px;}
+.matrix-key{margin-top:10px; display:flex; gap:18px; font-family:var(--mono); font-size:10.5px; color:var(--text-low); flex-wrap:wrap;}
+
+/* ---------- Risk radar ---------- */
+.radar-wrap{display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center;}
+@media(max-width:800px){.radar-wrap{grid-template-columns:1fr;}}
+.radar-legend{display:flex; flex-direction:column; gap:12px;}
+.radar-item{display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:10px;}
+.radar-item .ri-name{font-size:12.5px; color:var(--text-mid);}
+.radar-item .ri-val{font-family:var(--mono); font-weight:700; font-size:13px;}
+
+/* ---------- Twin profile ---------- */
+.twin-card{display:grid; grid-template-columns:220px 1fr; gap:26px;}
+@media(max-width:760px){.twin-card{grid-template-columns:1fr;}}
+.twin-avatar{
+  border-radius:16px; border:1px solid var(--border); background:
+    radial-gradient(circle at 30% 20%, rgba(156,140,255,0.25), transparent 60%),
+    radial-gradient(circle at 70% 80%, rgba(79,216,201,0.2), transparent 60%),
+    var(--surface-2);
+  min-height:220px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;
+}
+.twin-glyph{font-family:var(--mono); font-size:44px; font-weight:700; background:linear-gradient(135deg,var(--teal),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.twin-glyph-sub{font-family:var(--mono); font-size:10px; color:var(--text-low); letter-spacing:1px; text-transform:uppercase;}
+.twin-list{display:flex; flex-direction:column; gap:12px;}
+.twin-trait{display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:var(--surface);}
+.twin-trait .tt-icon{font-family:var(--mono); color:var(--violet); font-size:11px; padding:3px 7px; border:1px solid rgba(156,140,255,0.35); border-radius:6px; flex-shrink:0; margin-top:1px;}
+.twin-trait .tt-text{font-size:13px; color:var(--text-mid); line-height:1.55;}
+.twin-trait .tt-text b{color:var(--text-hi); font-weight:600;}
+
+/* ---------- Valuable assets ---------- */
+.asset-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+@media(max-width:900px){.asset-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.asset-grid{grid-template-columns:1fr;}}
+.asset-card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; position:relative;}
+.asset-rank{position:absolute; top:14px; right:16px; font-family:var(--mono); font-size:22px; font-weight:700; color:rgba(255,255,255,0.06);}
+.asset-title{font-family:var(--disp); font-weight:600; font-size:14px; margin-bottom:6px; padding-right:20px;}
+.asset-src{font-family:var(--mono); font-size:10px; color:var(--teal); margin-bottom:8px;}
+.asset-desc{font-size:12px; color:var(--text-mid); line-height:1.5;}
+.value-bar{height:6px; border-radius:4px; background:rgba(255,255,255,0.06); margin-top:12px; overflow:hidden;}
+.value-bar i{display:block; height:100%; background:linear-gradient(90deg,var(--amber),var(--rose));}
+
+/* ---------- Improvement plan / simulator ---------- */
+.plan-list{display:flex; flex-direction:column; gap:10px;}
+.plan-row{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px;
+  background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px;
+}
+@media(max-width:640px){.plan-row{grid-template-columns:1fr; text-align:left;} .plan-impact{justify-self:flex-start;}}
+.plan-check{width:22px; height:22px; border-radius:6px; border:1px solid var(--border-strong); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--text-low); cursor:pointer; transition:all .15s;}
+.plan-row.done .plan-check{background:var(--teal); border-color:var(--teal); color:#06120f;}
+.plan-row.done .plan-title{color:var(--text-low); text-decoration:line-through;}
+.plan-title{font-size:13px; font-weight:500;}
+.plan-sub{font-size:11.5px; color:var(--text-low); margin-top:2px;}
+.plan-impact{font-family:var(--mono); font-size:10px; text-transform:uppercase; padding:4px 10px; border-radius:20px; letter-spacing:0.4px;}
+.impact-high{color:var(--rose); background:rgba(251,107,132,0.1); border:1px solid rgba(251,107,132,0.3);}
+.impact-med{color:var(--amber); background:rgba(245,167,66,0.1); border:1px solid rgba(245,167,66,0.3);}
+.impact-low{color:var(--green); background:rgba(61,220,151,0.1); border:1px solid rgba(61,220,151,0.3);}
+
+.sim-result{margin-top:18px; background:linear-gradient(135deg, rgba(79,216,201,0.08), rgba(156,140,255,0.06)); border:1px solid var(--border-strong); border-radius:14px; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+.sim-label{font-family:var(--mono); font-size:11px; color:var(--text-low); text-transform:uppercase; letter-spacing:0.6px;}
+.sim-score{font-family:var(--mono); font-weight:700; font-size:28px; color:var(--teal);}
+.sim-bar{flex:1; min-width:180px; height:8px; border-radius:6px; background:rgba(255,255,255,0.06); overflow:hidden;}
+.sim-bar i{display:block; height:100%; background:linear-gradient(90deg,var(--teal),var(--green)); transition:width .5s ease;}
+
+/* ---------- Final verdict ---------- */
+.verdict-card{
+  border-radius:20px; padding:32px; border:1px solid var(--border-strong);
+  background:linear-gradient(160deg, rgba(156,140,255,0.09), rgba(79,216,201,0.06)), var(--surface);
+  position:relative; overflow:hidden;
+}
+.verdict-eyebrow{font-family:var(--mono); font-size:11px; color:var(--violet); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px;}
+.verdict-title{font-family:var(--disp); font-size:24px; font-weight:700; margin-bottom:14px; max-width:640px;}
+.verdict-body{font-size:14px; color:var(--text-mid); max-width:680px; line-height:1.7; margin-bottom:18px;}
+.verdict-metrics{display:flex; gap:28px; flex-wrap:wrap; margin-top:6px;}
+.vm{display:flex; flex-direction:column;}
+.vm-val{font-family:var(--mono); font-weight:700; font-size:22px;}
+.vm-key{font-size:11px; color:var(--text-low); font-family:var(--mono); text-transform:uppercase; margin-top:2px;}
+
+footer{margin-top:60px; padding:24px 0; border-top:1px solid var(--border); text-align:center;}
+footer p{font-size:11.5px; color:var(--text-low); font-family:var(--mono);}
+</style>
+
+<div class="scanband">
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="brand-left">
+          <div class="brand-mark">DF</div>
+          <div>
+            <div class="brand-name">Digital Footprint Report</div>
+            <div class="brand-sub">Self-Reported Data · Estimate Engine</div>
+          </div>
+        </div>
+        <div class="scan-tag"><span class="dot-live"></span>SCAN COMPLETE · 15 SERVICES</div>
+      </div>
+      <h1 class="hero-title">A privacy-style read on the apps you told us you use.</h1>
+      <p class="hero-desc">Built from a self-reported list of 15 apps and services. Every score below is a directional estimate calculated from public knowledge of how these categories of apps typically operate — not a measurement of your actual account activity.</p>
+      <div class="disclaimer-strip">
+        <span class="ico">⚠</span>
+        <div><b>No private data was accessed.</b> This report does not connect to Instagram, Google, Meta, or any other account. Every trait, ranking, and score beyond the raw app list is a labeled <b>Estimate</b> — reasoned from typical industry data practices, not verified fact. Nothing here should be read as certain.</div>
+      </div>
+    </header>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1 & 2: SCORES -->
+  <section>
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">01 — Overview</div><div class="sec-title">Footprint &amp; Privacy Scores</div></div>
+      <div class="sec-note">Estimates, scaled 0–100</div>
+    </div>
+    <div class="score-grid">
+      <div class="card score-card">
+        <div class="gauge">
+          <svg width="96" height="96">
+            <circle cx="48" cy="48" r="42" stroke="rgba(255,255,255,0.06)" stroke-width="9" fill="none"/>
+            <circle id="gauge1" cx="48" cy="48" r="42" stroke="#F5A742" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"/>
+          </svg>
+          <div class="gauge-val"><div class="gauge-num">78</div><div class="gauge-max">/ 100</div></div>
+        </div>
+        <div>
+          <div class="score-label">Digital Footprint Score</div>
+          <div class="score-band band-orange">🟠 Significant (61–80)</div>
+          <div class="score-desc">Broad coverage across social, messaging, gaming, shopping, finance and cloud media — one of the wider footprints this model estimates for a 15-app profile.</div>
+        </div>
+      </div>
+
+      <div class="card score-card">
+        <div class="gauge">
+          <svg width="96" height="96">
+            <circle cx="48" cy="48" r="42" stroke="rgba(255,255,255,0.06)" stroke-width="9" fill="none"/>
+            <circle id="gauge2" cx="48" cy="48" r="42" stroke="#F5A742" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"/>
+          </svg>
+          <div class="gauge-val"><div class="gauge-num">36</div><div class="gauge-max">/ 100</div></div>
+        </div>
+        <div>
+          <div class="score-label">Privacy Score</div>
+          <div class="score-band band-orange">🟠 Fair (31–60)</div>
+          <div class="score-desc">Estimated resilience is limited mainly by ecosystem concentration and the mix of financial, social and messaging apps sharing a small number of parent companies.</div>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="stat-row"><span class="stat-key">Total Services Used</span><span class="stat-val">15 <span class="tag-fact">Fact</span></span></div>
+        <div class="stat-row"><span class="stat-key">Number of Parent Companies</span><span class="stat-val teal">11 <span class="tag-fact">Fact</span></span></div>
+        <div class="stat-row"><span class="stat-key">Ecosystem Concentration</span><span class="stat-val violet">27% Google <span class="tag-est">Est.</span></span></div>
+        <div class="stat-row"><span class="stat-key">Estimated Tracking Surface</span><span class="stat-val">High <span class="tag-est">Est.</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3: HEATMAP -->
+  <section id="heatmap">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">02 — Signature Scan</div><div class="sec-title">Exposure Heatmap</div></div>
+      <div class="sec-note">Category coverage from Facts <span class="tag-fact">Fact</span></div>
+    </div>
+    <div class="card heatmap-card">
+      <div class="heatmap-grid" id="heatGrid"></div>
+      <div class="heat-legend">
+        <span><i class="sw" style="background:#3a1420"></i>Low coverage (1 app)</span>
+        <span><i class="sw" style="background:#7a2a3a"></i>Moderate (2 apps)</span>
+        <span><i class="sw" style="background:#c0405a"></i>High (3 apps)</span>
+        <span><i class="sw" style="background:#fb6b84"></i>Very high (4+ apps)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4: COMPANY RANKING -->
+  <section id="ranking">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">03 — Concentration</div><div class="sec-title">Company Exposure Ranking</div></div>
+      <div class="sec-note">Modeled exposure score <span class="tag-est">Est.</span></div>
+    </div>
+    <div class="rank-list" id="rankList"></div>
+  </section>
+
+  <!-- 5: DATA COLLECTION MATRIX -->
+  <section id="matrix">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">04 — Category Mapping</div><div class="sec-title">Data Collection Matrix</div></div>
+      <div class="sec-note">Typical data types by company <span class="tag-est">Est.</span></div>
+    </div>
+    <div class="matrix-scroll">
+      <table class="matrix" id="matrixTable"></table>
+    </div>
+    <div class="matrix-key">
+      <span><span class="dot-full">●</span> Likely collected</span>
+      <span><span class="dot-partial">◐</span> Possibly collected</span>
+      <span><span class="dot-low">○</span> Minimal / unlikely</span>
+    </div>
+  </section>
+
+  <!-- 6: RISK RADAR -->
+  <section id="radar">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">05 — Risk Surface</div><div class="sec-title">Risk Radar</div></div>
+      <div class="sec-note">Directional, not measured <span class="tag-est">Est.</span></div>
+    </div>
+    <div class="card">
+      <div class="radar-wrap">
+        <svg id="radarSvg" viewBox="0 0 320 320" width="100%" height="320"></svg>
+        <div class="radar-legend" id="radarLegend"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7: DIGITAL TWIN -->
+  <section id="twin">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">06 — Behavioral Estimate</div><div class="sec-title">Digital Twin Profile</div></div>
+      <div class="sec-note">All traits are estimates <span class="tag-est">Est.</span></div>
+    </div>
+    <div class="card twin-card">
+      <div class="twin-avatar">
+        <div class="twin-glyph">DT-01</div>
+        <div class="twin-glyph-sub">Composite Estimate</div>
+      </div>
+      <div class="twin-list">
+        <div class="twin-trait"><span class="tt-icon">LIFESTYLE</span><div class="tt-text"><b>Estimate:</b> mobile-first and socially active, likely spending meaningful time across short-form video, messaging and gaming apps rather than desktop-first services.</div></div>
+        <div class="twin-trait"><span class="tt-icon">SHOPPING</span><div class="tt-text"><b>Estimate:</b> price-conscious online shopper — pairing a value-marketplace app (Meesho) with a full-catalog retailer (Amazon) suggests comparison shopping rather than single-platform loyalty.</div></div>
+        <div class="twin-trait"><span class="tt-icon">GEOGRAPHY</span><div class="tt-text"><b>Estimate:</b> possibly based in or connected to India, inferred from the presence of Meesho, a marketplace with a predominantly India-based user base. Not confirmed.</div></div>
+        <div class="twin-trait"><span class="tt-icon">ENTERTAINMENT</span><div class="tt-text"><b>Estimate:</b> regular consumer of short-form and long-form video plus streaming audio (TikTok, YouTube, Spotify), suggesting entertainment is a daily, multi-format habit.</div></div>
+        <div class="twin-trait"><span class="tt-icon">SOCIAL AGE SIGNAL</span><div class="tt-text"><b>Estimate:</b> the combination of Roblox, PUBG Mobile and Discord is more common among younger or teen-skewing users, though adults use all three as well — this is a weak signal, not a determination.</div></div>
+        <div class="twin-trait"><span class="tt-icon">COMMUNICATION</span><div class="tt-text"><b>Estimate:</b> communication is fragmented across at least four channels (WhatsApp, iMessage, Snapchat, Discord), suggesting different contact groups are reached on different platforms.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8: VALUABLE ASSETS -->
+  <section id="assets">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">07 — Monetization Lens</div><div class="sec-title">Most Valuable Data Assets</div></div>
+      <div class="sec-note">Ranked by estimated commercial value <span class="tag-est">Est.</span></div>
+    </div>
+    <div class="asset-grid" id="assetGrid"></div>
+  </section>
+
+  <!-- 9: PRIVACY IMPROVEMENT PLAN / SIMULATOR -->
+  <section id="plan">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">08 — Action Plan</div><div class="sec-title">Privacy Improvement Simulator</div></div>
+      <div class="sec-note">Tap an item to simulate applying it</div>
+    </div>
+    <div class="card">
+      <div class="plan-list" id="planList"></div>
+      <div class="sim-result">
+        <div>
+          <div class="sim-label">Simulated Privacy Score</div>
+          <div class="sim-score"><span id="simScore">36</span> / 100</div>
+        </div>
+        <div class="sim-bar"><i id="simBar" style="width:36%"></i></div>
+        <div class="sim-label" id="simDelta">+0 from baseline</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL VERDICT -->
+  <section id="verdict">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">09 — Summary</div><div class="sec-title">Final Verdict</div></div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-eyebrow">Composite Read</div>
+      <div class="verdict-title">A wide, ecosystem-concentrated footprint with room to tighten.</div>
+      <div class="verdict-body">
+        Across 15 self-reported apps spanning 11 parent companies <span class="tag-fact">Fact</span>, coverage touches nearly every high-value data category — social graph, messaging, gaming, shopping, search, finance and cloud photo storage <span class="tag-est">Est.</span>. Google's four services and Meta's two create the largest single points of concentration, meaning a smaller number of companies can estimate more about the same person by combining signals across their own products <span class="tag-est">Est.</span>. None of this reflects actual account behavior — it reflects what this category of app mix typically enables. Tightening account-level privacy controls on the Google and Meta accounts specifically would address the largest share of estimated exposure.
+      </div>
+      <div class="verdict-metrics">
+        <div class="vm"><div class="vm-val" style="color:#F5A742;">78</div><div class="vm-key">Footprint · Significant</div></div>
+        <div class="vm"><div class="vm-val" style="color:#F5A742;">36</div><div class="vm-key">Privacy · Fair</div></div>
+        <div class="vm"><div class="vm-val" style="color:#9C8CFF;">27%</div><div class="vm-key">Google Concentration</div></div>
+        <div class="vm"><div class="vm-val" style="color:#4FD8C9;">11</div><div class="vm-key">Parent Companies</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>GENERATED FROM SELF-REPORTED APP LIST · NO ACCOUNT DATA ACCESSED · ALL NON-FACT ITEMS ARE LABELED ESTIMATES</p>
+  </footer>
+</div>
+
+<script>
+// ---------- animate score gauges ----------
+function animateGauge(id, value, color){
+  const el = document.getElementById(id);
+  const circumference = 264;
+  const offset = circumference - (value/100)*circumference;
+  el.style.stroke = color;
+  requestAnimationFrame(()=>{
+    el.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1)';
+    el.style.strokeDashoffset = offset;
+  });
+}
+animateGauge('gauge1', 78, '#F5A742');
+animateGauge('gauge2', 36, '#F5A742');
+
+// ---------- Heatmap ----------
+const heatData = [
+  {name:'Messaging', apps:['Snapchat','Discord','WhatsApp','iMessage'], count:4},
+  {name:'Social', apps:['Instagram','Snapchat','TikTok'], count:3},
+  {name:'Entertainment', apps:['TikTok','YouTube','Spotify'], count:3},
+  {name:'Gaming', apps:['Discord','Roblox','PUBG Mobile'], count:3},
+  {name:'Photos / Cloud', apps:['Instagram','Google Photos'], count:2},
+  {name:'Shopping', apps:['Amazon','Meesho'], count:2},
+  {name:'Search', apps:['Google Search'], count:1},
+  {name:'Finance', apps:['Google Pay'], count:1},
+];
+function heatColor(c){
+  if(c>=4) return '#fb6b84';
+  if(c===3) return '#c0405a';
+  if(c===2) return '#7a2a3a';
+  return '#3a1420';
+}
+const heatGrid = document.getElementById('heatGrid');
+heatData.forEach(h=>{
+  const cell = document.createElement('div');
+  cell.className = 'heat-cell';
+  cell.innerHTML = `<div class="hc-fill" style="background:${heatColor(h.count)}"></div>
+    <div class="hc-name">${h.name}</div>
+    <div class="hc-meta">${h.count} app${h.count>1?'s':''} · ${h.apps.join(', ')}</div>`;
+  heatGrid.appendChild(cell);
+});
+
+// ---------- Company ranking ----------
+const rankData = [
+  {name:'Google / Alphabet', apps:'Search, YouTube, Pay, Photos', score:92},
+  {name:'Meta', apps:'Instagram, WhatsApp', score:78},
+  {name:'ByteDance', apps:'TikTok', score:65},
+  {name:'Snap Inc.', apps:'Snapchat', score:58},
+  {name:'Discord Inc.', apps:'Discord', score:50},
+  {name:'Amazon', apps:'Amazon', score:48},
+  {name:'Apple', apps:'iMessage', score:40},
+  {name:'Krafton / Tencent', apps:'PUBG Mobile', score:33},
+  {name:'Meesho', apps:'Meesho', score:35},
+  {name:'Spotify AB', apps:'Spotify', score:30},
+  {name:'Roblox Corporation', apps:'Roblox', score:28},
+].sort((a,b)=>b.score-a.score);
+
+const rankList = document.getElementById('rankList');
+rankData.forEach((r,i)=>{
+  const row = document.createElement('div');
+  row.className = 'rank-row';
+  row.innerHTML = `
+    <div class="rank-idx">${String(i+1).padStart(2,'0')}</div>
+    <div><div class="rank-name">${r.name}</div><div class="rank-sub">${r.apps}</div></div>
+    <div class="rank-bar-wrap"><div class="rank-bar" style="width:${r.score}%"></div></div>
+    <div class="rank-score">${r.score}</div>`;
+  rankList.appendChild(row);
+});
+
+// ---------- Data collection matrix ----------
+const matrixCols = ['Location','Financial','Social Graph','Photos / Biometric','Search / Browsing','Behavioral','Communications'];
+const matrixRows = [
+  {name:'Google / Alphabet', vals:['full','full','partial','full','full','full','partial']},
+  {name:'Meta', vals:['partial','low','full','full','partial','full','full']},
+  {name:'ByteDance', vals:['partial','low','partial','partial','partial','full','low']},
+  {name:'Snap Inc.', vals:['partial','low','partial','full','low','full','full']},
+  {name:'Discord Inc.', vals:['low','low','partial','low','low','partial','full']},
+  {name:'Amazon', vals:['partial','full','low','low','partial','full','low']},
+  {name:'Apple', vals:['partial','low','partial','low','low','low','full']},
+  {name:'Meesho', vals:['partial','full','low','low','low','partial','low']},
+  {name:'Spotify AB', vals:['partial','partial','low','low','low','full','low']},
+  {name:'Roblox Corp.', vals:['low','partial','partial','low','low','partial','partial']},
+  {name:'Krafton / Tencent', vals:['partial','partial','partial','low','low','partial','partial']},
+];
+const dotMap = {full:'<span class="dot-full">●</span>', partial:'<span class="dot-partial">◐</span>', low:'<span class="dot-low">○</span>'};
+const table = document.getElementById('matrixTable');
+let thead = '<thead><tr><th>Company</th>' + matrixCols.map(c=>`<th>${c}</th>`).join('') + '</tr></thead>';
+let tbody = '<tbody>' + matrixRows.map(r=>`<tr><td>${r.name}</td>${r.vals.map(v=>`<td>${dotMap[v]}</td>`).join('')}</tr>`).join('') + '</tbody>';
+table.innerHTML = thead + tbody;
+
+// ---------- Risk radar ----------
+const radarData = [
+  {label:'Social Graph Exposure', val:85},
+  {label:'Cross-Platform Correlation', val:88},
+  {label:'Behavioral Tracking', val:80},
+  {label:'Communication Privacy Risk', val:60},
+  {label:'Financial Exposure', val:55},
+  {label:'Biometric / Photo Exposure', val:50},
+];
+const svgNS = 'http://www.w3.org/2000/svg';
+const radarSvg = document.getElementById('radarSvg');
+const cx=160, cy=160, R=118, n=radarData.length;
+function pointFor(i, r){
+  const angle = (Math.PI*2*i/n) - Math.PI/2;
+  return [cx + r*Math.cos(angle), cy + r*Math.sin(angle)];
+}
+// grid rings
+[0.25,0.5,0.75,1].forEach(f=>{
+  const pts = radarData.map((_,i)=>pointFor(i,R*f).join(',')).join(' ');
+  const poly = document.createElementNS(svgNS,'polygon');
+  poly.setAttribute('points', pts);
+  poly.setAttribute('fill','none');
+  poly.setAttribute('stroke','rgba(255,255,255,0.08)');
+  poly.setAttribute('stroke-width','1');
+  radarSvg.appendChild(poly);
+});
+// axes
+radarData.forEach((d,i)=>{
+  const [x,y] = pointFor(i,R);
+  const line = document.createElementNS(svgNS,'line');
+  line.setAttribute('x1',cx); line.setAttribute('y1',cy);
+  line.setAttribute('x2',x); line.setAttribute('y2',y);
+  line.setAttribute('stroke','rgba(255,255,255,0.08)');
+  radarSvg.appendChild(line);
+});
+// data polygon
+const dataPts = radarData.map((d,i)=>pointFor(i, R*d.val/100).join(',')).join(' ');
+const dataPoly = document.createElementNS(svgNS,'polygon');
+dataPoly.setAttribute('points', dataPts);
+dataPoly.setAttribute('fill','rgba(79,216,201,0.18)');
+dataPoly.setAttribute('stroke','#4FD8C9');
+dataPoly.setAttribute('stroke-width','2');
+radarSvg.appendChild(dataPoly);
+// dots + labels
+radarData.forEach((d,i)=>{
+  const [x,y] = pointFor(i, R*d.val/100);
+  const dot = document.createElementNS(svgNS,'circle');
+  dot.setAttribute('cx',x); dot.setAttribute('cy',y); dot.setAttribute('r',3.5);
+  dot.setAttribute('fill','#9C8CFF');
+  radarSvg.appendChild(dot);
+  const [lx,ly] = pointFor(i, R+22);
+  const text = document.createElementNS(svgNS,'text');
+  text.setAttribute('x',lx); text.setAttribute('y',ly);
+  text.setAttribute('text-anchor','middle');
+  text.setAttribute('font-size','8.5');
+  text.setAttribute('font-family','JetBrains Mono, monospace');
+  text.setAttribute('fill','#5B6685');
+  text.textContent = (i+1);
+  radarSvg.appendChild(text);
+});
+const radarLegend = document.getElementById('radarLegend');
+radarData.forEach((d,i)=>{
+  const item = document.createElement('div');
+  item.className = 'radar-item';
+  const color = d.val>=75?'#FB6B84':d.val>=50?'#F5A742':'#3DDC97';
+  item.innerHTML = `<span class="ri-name">${i+1}. ${d.label}</span><span class="ri-val" style="color:${color}">${d.val}</span>`;
+  radarLegend.appendChild(item);
+});
+
+// ---------- Valuable assets ----------
+const assets = [
+  {title:'Social Graph & Relationship Map', src:'Instagram · Snapchat · WhatsApp · Discord · iMessage', desc:'Who you know, how often, and through which channel — among the highest-value signals for targeting and recommendation systems.', val:92},
+  {title:'Behavioral & Attention Data', src:'TikTok · YouTube · Spotify', desc:'Watch time, skips, replays and session length build a detailed model of interests and mood over time.', val:88},
+  {title:'Financial & Purchase Signals', src:'Google Pay · Amazon · Meesho', desc:'Transaction history and price sensitivity are among the most directly monetizable data categories.', val:80},
+  {title:'Location & Mobility Patterns', src:'Google ecosystem · shopping & messaging apps', desc:'Even without GPS enabled, app usage timing and delivery addresses can approximate movement patterns.', val:70},
+  {title:'Visual & Possible Biometric Data', src:'Google Photos · Instagram', desc:'Uploaded photos can contain face data, location metadata, and household/lifestyle context.', val:62},
+  {title:'Gaming Behavior & Peer Network', src:'Roblox · PUBG Mobile · Discord', desc:'In-game spend, session patterns and voice/text chat groups reveal social ties and spending habits.', val:55},
+];
+const assetGrid = document.getElementById('assetGrid');
+assets.forEach((a,i)=>{
+  const c = document.createElement('div');
+  c.className = 'asset-card';
+  c.innerHTML = `<div class="asset-rank">${String(i+1).padStart(2,'0')}</div>
+    <div class="asset-title">${a.title}</div>
+    <div class="asset-src">${a.src}</div>
+    <div class="asset-desc">${a.desc}</div>
+    <div class="value-bar"><i style="width:${a.val}%"></i></div>`;
+  assetGrid.appendChild(c);
+});
+
+// ---------- Privacy plan / simulator ----------
+const planItems = [
+  {title:'Review Google account permissions & ad personalization', sub:'Addresses the largest single concentration (4 services)', impact:'high', weight:12},
+  {title:'Turn off Meta cross-app activity tracking', sub:'Limits Instagram ↔ WhatsApp data sharing', impact:'high', weight:10},
+  {title:'Restrict Discord & Roblox privacy settings to friends-only', sub:'Reduces exposure of social graph in gaming spaces', impact:'medium', weight:7},
+  {title:'Limit ad tracking on TikTok and Snapchat', sub:'Reduces behavioral profiling from short-form video', impact:'medium', weight:6},
+  {title:'Enable 2FA on Google Pay and Amazon', sub:'Protects the financial exposure surface', impact:'high', weight:9},
+  {title:'Audit Google Photos face grouping & shared albums', sub:'Reduces visual/biometric exposure', impact:'low', weight:4},
+  {title:'Separate sensitive conversations from Snapchat/Discord', sub:'Prefer WhatsApp or iMessage for higher-sensitivity chats', impact:'low', weight:3},
+];
+const planList = document.getElementById('planList');
+const impactClass = {high:'impact-high', med:'impact-med', low:'impact-low'};
+let baseline = 36, applied = 0;
+planItems.forEach((p,i)=>{
+  const row = document.createElement('div');
+  row.className = 'plan-row';
+  row.dataset.weight = p.weight;
+  row.innerHTML = `
+    <div class="plan-check">${i+1}</div>
+    <div><div class="plan-title">${p.title}</div><div class="plan-sub">${p.sub}</div></div>
+    <div class="plan-impact ${p.impact==='high'?'impact-high':p.impact==='medium'?'impact-med':'impact-low'}">${p.impact}</div>`;
+  row.addEventListener('click', ()=>{
+    row.classList.toggle('done');
+    updateSim();
+  });
+  planList.appendChild(row);
+});
+function updateSim(){
+  let extra = 0;
+  document.querySelectorAll('.plan-row.done').forEach(r=> extra += parseInt(r.dataset.weight));
+  let score = Math.min(96, baseline + extra);
+  document.getElementById('simScore').textContent = score;
+  document.getElementById('simBar').style.width = score + '%';
+  document.getElementById('simDelta').textContent = (extra>0?'+':'') + extra + ' from baseline (estimate)';
+}
+updateSim();
+</script>
