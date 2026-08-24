@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Emotional Companion App — Investment Dashboard</title>
+<style>
+  :root{
+    --bg:#0f1420; --card:#161d2e; --card2:#1b2438; --line:#2a3550;
+    --ink:#eef1f8; --sub:#93a0bf; --accent:#7c9cff; --accent2:#61e0c8;
+    --amber:#f5b942; --red:#f2637a; --green:#4fd18b; --orange:#f5924a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:32px; background:var(--bg); color:var(--ink);
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+  .wrap{max-width:1200px;margin:0 auto;}
+  h1{font-size:26px;margin:0 0 4px;}
+  .sub{color:var(--sub);font-size:14px;margin-bottom:24px;}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;}
+  .card{
+    background:linear-gradient(180deg,var(--card2),var(--card));
+    border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+  }
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent2);margin:0 0 12px;}
+  .span4{grid-column:span 4;} .span6{grid-column:span 6;} .span8{grid-column:span 8;}
+  .span12{grid-column:span 12;} .span3{grid-column:span 3;}
+  ul{margin:0;padding-left:18px;} li{margin-bottom:6px;font-size:13px;color:var(--ink);}
+  .pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-right:6px;}
+  .pill.high{background:rgba(242,99,122,.18);color:var(--red);}
+  .pill.med{background:rgba(245,146,74,.18);color:var(--orange);}
+  .flow{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .flowstep{
+    flex:1;background:var(--card2);border:1px solid var(--line);border-radius:10px;
+    padding:10px;text-align:center;font-size:12px;
+  }
+  .flowstep b{display:block;font-size:13px;color:var(--accent2);margin-bottom:2px;}
+  .arrow{color:var(--accent);font-size:18px;}
+  .score{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .score .label{width:130px;font-size:12px;color:var(--sub);}
+  .barbg{flex:1;height:10px;background:#232c42;border-radius:6px;overflow:hidden;}
+  .barfill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+  .score .val{width:34px;text-align:right;font-size:12px;font-weight:700;}
+  .verdict{
+    display:flex;align-items:center;gap:16px;padding:18px 22px;border-radius:14px;
+    background:linear-gradient(135deg,rgba(245,185,66,.16),rgba(245,185,66,.04));
+    border:1px solid rgba(245,185,66,.4);
+  }
+  .verdict .dot{width:20px;height:20px;border-radius:50%;background:var(--amber);flex-shrink:0;box-shadow:0 0 14px var(--amber);}
+  .verdict h3{margin:0;font-size:18px;} .verdict p{margin:4px 0 0;color:var(--sub);font-size:13px;}
+  .moat{display:flex;gap:10px;flex-wrap:wrap;}
+  .moatchip{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;flex:1;min-width:130px;}
+  .moatchip .lvl{font-weight:700;font-size:11px;}
+  .weak{color:var(--red);} .mid{color:var(--orange);} .none{color:var(--sub);}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;}
+  th{color:var(--sub);font-weight:600;}
+  .center{display:flex;align-items:center;justify-content:center;}
+  .kpi{text-align:center;}
+  .kpi .n{font-size:26px;font-weight:800;color:var(--accent2);}
+  .kpi .t{font-size:11px;color:var(--sub);margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AI Emotional Companion App — India</h1>
+  <div class="sub">Investment Dashboard · Derived from the Customer &amp; MVP Blueprint (informal validation only — no waitlist / prototype / usage data)</div>
+
+  <div class="grid">
+
+    <!-- Business Model -->
+    <div class="card span6">
+      <h2>Business Model</h2>
+      <svg width="100%" height="150" viewBox="0 0 500 150">
+        <rect x="0" y="10" width="150" height="60" rx="8" fill="#1e2a44" stroke="#2a3550"/>
+        <text x="75" y="35" fill="#93a0bf" font-size="10" text-anchor="middle">SEGMENT</text>
+        <text x="75" y="52" fill="#eef1f8" font-size="11" text-anchor="middle">College students</text>
+        <text x="75" y="65" fill="#eef1f8" font-size="11" text-anchor="middle">18–24, Tier 1/2 India</text>
+
+        <rect x="175" y="10" width="150" height="60" rx="8" fill="#1e2a44" stroke="#2a3550"/>
+        <text x="250" y="35" fill="#93a0bf" font-size="10" text-anchor="middle">VALUE PROP</text>
+        <text x="250" y="52" fill="#eef1f8" font-size="11" text-anchor="middle">Judgment-free,</text>
+        <text x="250" y="65" fill="#eef1f8" font-size="11" text-anchor="middle">Hinglish, private</text>
+
+        <rect x="350" y="10" width="150" height="60" rx="8" fill="#1e2a44" stroke="#2a3550"/>
+        <text x="425" y="35" fill="#93a0bf" font-size="10" text-anchor="middle">CHANNEL</text>
+        <text x="425" y="52" fill="#eef1f8" font-size="11" text-anchor="middle">Creator / Reels</text>
+        <text x="425" y="65" fill="#eef1f8" font-size="11" text-anchor="middle">(organic, unowned)</text>
+
+        <rect x="90" y="90" width="150" height="50" rx="8" fill="#20304a" stroke="#2a3550"/>
+        <text x="165" y="112" fill="#93a0bf" font-size="10" text-anchor="middle">COST</text>
+        <text x="165" y="128" fill="#eef1f8" font-size="11" text-anchor="middle">LLM API + creator fees</text>
+
+        <rect x="260" y="90" width="150" height="50" rx="8" fill="#20304a" stroke="#2a3550"/>
+        <text x="335" y="112" fill="#93a0bf" font-size="10" text-anchor="middle">REVENUE</text>
+        <text x="335" y="128" fill="#eef1f8" font-size="11" text-anchor="middle">Freemium subscription</text>
+      </svg>
+    </div>
+
+    <!-- Revenue Streams -->
+    <div class="card span6">
+      <h2>Revenue Streams (Hypothesis — Untested)</h2>
+      <svg width="100%" height="150" viewBox="0 0 500 150">
+        <!-- donut -->
+        <circle cx="75" cy="75" r="55" fill="none" stroke="#232c42" stroke-width="20"/>
+        <circle cx="75" cy="75" r="55" fill="none" stroke="#7c9cff" stroke-width="20"
+          stroke-dasharray="34.5 310" stroke-dashoffset="0" transform="rotate(-90 75 75)"/>
+        <text x="75" y="80" fill="#eef1f8" font-size="16" text-anchor="middle" font-weight="700">~10%</text>
+        <text x="75" y="95" fill="#93a0bf" font-size="9" text-anchor="middle">est. paid conv.</text>
+
+        <text x="160" y="35" fill="#eef1f8" font-size="12" font-weight="700">Free tier</text>
+        <text x="160" y="50" fill="#93a0bf" font-size="10">Unlimited basic text chat</text>
+        <text x="160" y="63" fill="#93a0bf" font-size="10">— acquisition &amp; retention layer, $0</text>
+
+        <text x="160" y="90" fill="#eef1f8" font-size="12" font-weight="700">Paid tier</text>
+        <text x="160" y="105" fill="#93a0bf" font-size="10">₹49–149/mo — cross-session memory,</text>
+        <text x="160" y="118" fill="#93a0bf" font-size="10">voice, deeper personalization</text>
+        <text x="160" y="138" fill="#f5b942" font-size="10" font-weight="600">No WTP data collected yet</text>
+      </svg>
+    </div>
+
+    <!-- GTM Flow -->
+    <div class="card span12">
+      <h2>Go-To-Market Flow</h2>
+      <div class="flow">
+        <div class="flowstep"><b>1 · Interviews</b>15–20 structured student interviews</div>
+        <div class="arrow">→</div>
+        <div class="flowstep"><b>2 · Waitlist</b>Landing page live, real intent signal</div>
+        <div class="arrow">→</div>
+        <div class="flowstep"><b>3 · Creators</b>5–10 student-community creators seeded</div>
+        <div class="arrow">→</div>
+        <div class="flowstep"><b>4 · Reels/UGC</b>Relatable short-form content drives trial</div>
+        <div class="arrow">→</div>
+        <div class="flowstep"><b>5 · Free chat</b>Warm Hinglish onboarding, no signup friction</div>
+        <div class="arrow">→</div>
+        <div class="flowstep"><b>6 · Upgrade</b>Memory/voice paywall for returners</div>
+      </div>
+    </div>
+
+    <!-- First 100 users -->
+    <div class="card span6">
+      <h2>First 100 Users Plan</h2>
+      <table>
+        <tr><th>Source</th><th>Target</th><th>Method</th></tr>
+        <tr><td>Founder network interviews</td><td>15–20</td><td>Manual outreach, hostel/college WhatsApp groups</td></tr>
+        <tr><td>Landing page waitlist</td><td>50+</td><td>Shared via student communities, one micro-creator</td></tr>
+        <tr><td>Manual concierge testers</td><td>10–20</td><td>Scripted first-chat, no code, direct feedback</td></tr>
+        <tr><td>Seed creator posts (2–3)</td><td>remaining</td><td>Track installs/replies, not just views</td></tr>
+      </table>
+    </div>
+
+    <!-- Competitive moat -->
+    <div class="card span6">
+      <h2>Competitive Moat — Honest Read</h2>
+      <div class="moat">
+        <div class="moatchip">Tech / model <div class="lvl weak">Weak</div> LLM API wrapper</div>
+        <div class="moatchip">Data / memory <div class="lvl none">None yet</div> zero usage data</div>
+        <div class="moatchip">Language/culture <div class="lvl mid">Moderate</div> Hinglish + local context</div>
+        <div class="moatchip">Brand/trust <div class="lvl none">None yet</div> unvalidated, unproven safety</div>
+        <div class="moatchip">Distribution <div class="lvl weak">Weak</div> rented creator reach</div>
+        <div class="moatchip">Community/network <div class="lvl none">None</div> not yet designed</div>
+      </div>
+    </div>
+
+    <!-- Key risks -->
+    <div class="card span6">
+      <h2>Key Risks</h2>
+      <ul>
+        <li><span class="pill high">HIGH</span>Minor-safety / regulatory exposure if under-18s reached</li>
+        <li><span class="pill high">HIGH</span>Emotional dependency / mental-health liability</li>
+        <li><span class="pill high">HIGH</span>Zero demand signal — building before validating</li>
+        <li><span class="pill med">MED</span>Well-funded global incumbents (Replika, Character.AI)</li>
+        <li><span class="pill med">MED</span>Low India ARPU pressures unit economics</li>
+      </ul>
+    </div>
+
+    <!-- Score cards -->
+    <div class="card span6">
+      <h2>Investment Scorecard</h2>
+      <div class="score"><div class="label">Business Viability</div><div class="barbg"><div class="barfill" style="width:40%"></div></div><div class="val">40</div></div>
+      <div class="score"><div class="label">Revenue Potential</div><div class="barbg"><div class="barfill" style="width:35%"></div></div><div class="val">35</div></div>
+      <div class="score"><div class="label">GTM Strength</div><div class="barbg"><div class="barfill" style="width:30%"></div></div><div class="val">30</div></div>
+      <div class="score"><div class="label">Competitive Strength</div><div class="barbg"><div class="barfill" style="width:25%"></div></div><div class="val">25</div></div>
+      <div class="score"><div class="label">Investor Readiness</div><div class="barbg"><div class="barfill" style="width:20%"></div></div><div class="val">20</div></div>
+    </div>
+
+    <!-- KPIs from blueprint -->
+    <div class="card span12">
+      <h2>Blueprint Baseline Scores &amp; 30–60 Day Success Bar</h2>
+      <div class="grid">
+        <div class="span3 kpi"><div class="n">62</div><div class="t">Customer Clarity</div></div>
+        <div class="span3 kpi"><div class="n">74</div><div class="t">Problem Severity</div></div>
+        <div class="span3 kpi"><div class="n">48</div><div class="t">PMF Potential</div></div>
+        <div class="span3 kpi"><div class="n">35</div><div class="t">MVP Readiness</div></div>
+      </div>
+    </div>
+
+    <!-- Verdict -->
+    <div class="card span12">
+      <div class="verdict">
+        <div class="dot"></div>
+        <div>
+          <h3>🟡 VALIDATE — Not yet investable, not a reject</h3>
+          <p>Strong problem severity and large market fundamentals, but zero quantified demand signal, no safety/legal framework, and no proven willingness-to-pay. Run Weeks 1–2 of the MVP Plan (interviews + waitlist) before writing product code or pitching investors.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
